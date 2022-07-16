@@ -1,0 +1,32 @@
+.container {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 10vh;
+    box-shadow: 0px 1px 8px rgba(0,0,0,0,.1);
+    -webkit-box-shadow: 0px 1px 8px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 1px 8px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 3%;
+    padding-right: 5%;
+    background: transparent;
+}
+
+.header{
+    font-size: 1.8em;
+    font-weight: 500;
+    color: whitesmoke;
+}
+.links{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.2em;
+}
+
+.links h3{
+    font-weight: 500;
+    margin-left: 2em;
+}
