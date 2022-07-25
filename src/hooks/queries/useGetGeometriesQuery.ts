@@ -2,17 +2,17 @@ import { useQuery } from 'react-query'
 import axios from '../../utils/axios'
 import GeometryQuery from '../../types/GeometryQuery'
 
-const fetchGeometries = async (lat, lon, maxdis, mindis) => {
-    const res = await axios.get(`/near?lat=${lat}&lon=${lon}&maxdis=${maxdis}&mindis=${mindis}`)
+const fetchGeometries = async (lat, lng, maxdis, search) => {
+    const res = await axios.get(`/near?lat=${lat}&lng=${lng}&maxdis=${maxdis}&coordinate=true&search=${search}`)
     return res.data
 }
 
 
-export const useGetGeometriesQuery = ({ lat, lon, maxdis, mindis=0 }: GeometryQuery)  => {
+export const useGetGeometriesQuery = ({ lat, lng, maxdis, search }: GeometryQuery)  => {
 
     const result =  useQuery({
         queryKey: 'geometries', 
-        queryFn: () => fetchGeometries(lat, lon, maxdis, mindis), 
+        queryFn: () => fetchGeometries(lat, lng, maxdis, search), 
         enabled: false 
     })
 
