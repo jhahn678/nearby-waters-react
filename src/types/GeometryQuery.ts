@@ -1,6 +1,7 @@
 type GeometryQuery = {
+    search?: string,
     lat: number,
-    lon: number,
+    lng: number,
     mindis?: number,
     maxdis: number
 }
