@@ -9,7 +9,7 @@ const Header = () => {
         <Title className={classes.header} order={1}>Find nearby waters</Title>
         <div className={classes.links}>
             <NavLink to='/' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}><Title order={3}>Home</Title></NavLink>
-            <NavLink to='/manual' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}><Title order={3}>API</Title></NavLink>
+            <NavLink to='/api' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}><Title order={3}>API</Title></NavLink>
             <NavLink to='/about' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}><Title order={3}>About</Title></NavLink>
         </div>
     </div>

@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
-import ManualPage from './pages/ManualPage'
+import APIPage from './pages/APIpage'
+import TestPage from './pages/TestPage/TestPage.tsx'
 
 
 const AppRoutes = () => {
@@ -10,7 +11,8 @@ const AppRoutes = () => {
         <Routes>
             <Route index element={<HomePage/>}/>
             <Route path='/about' element={<AboutPage/>}/>
-            <Route path='/manual' element={<ManualPage/>}/>
+            <Route path='/api' element={<APIPage/>}/>
+            <Route path='/test' element={<TestPage/>}/>
         </Routes>
     </BrowserRouter>
   )

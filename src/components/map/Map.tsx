@@ -87,7 +87,9 @@ const Map = ({ data, query, setCoords }: Props) => {
             data.map(geom => {
                 const marker = new mapboxgl.Marker()
                     .setLngLat(geom.geometry.coordinates)
-                    .setPopup(new mapboxgl.Popup({ offset: 25}).setText(geom.name))
+                    .setPopup(new mapboxgl.Popup({ offset: 25}).setHTML(
+                        `<h4>${geom.name}</h4><p><i>classification</i>: ${geom.classification}</p>`
+                        ))
                     .addTo(mapRef.current)
                 setMarkers(m => [...m, marker])
                 return marker;

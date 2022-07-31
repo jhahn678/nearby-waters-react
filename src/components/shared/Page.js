@@ -1,6 +1,5 @@
 import React from 'react'
-// import BackgroundImage from './BackgroundImage';
-import Header from './Header.tsx'
+import Header from './Header/Header.tsx'
 
 const Page = ({ children, className}) => {
   return (
