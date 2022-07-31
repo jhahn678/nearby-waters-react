@@ -1,0 +1,46 @@
+.container{
+    display: flex;
+    width: 100vw;
+}
+
+.searchBox{
+    width: 40vw;
+    background-color: rgba(169, 187, 203, 0.3);
+    border-top-right-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 5vh 3vw;
+}
+
+.tip{
+    align-self: flex-start;
+    margin-bottom: 2em;
+}
+.searchBar{
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
+
+.currentLocationButton{
+    width: 34vw;
+    margin-top: .5em;
+}
+
+.lnglatInputs{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .5em;
+}
+
+.coordInput{
+    width: 16.6vw
+}
+
+.resultsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60vw;
+    padding: 5vw;
+}
