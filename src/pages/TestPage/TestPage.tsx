@@ -17,7 +17,10 @@ const TestPage = (): JSX.Element => {
         input: state.input, 
         coords: state.coords, 
         queryType: state.queryType,
-        shouldQuery: (state.coordsValid && state.fieldsTouched)
+        shouldQuery: state.coordsAreValid || (
+            state.coordsAreNull && 
+            state.input.length > 0
+        )
     })
     
     return (
@@ -67,7 +70,9 @@ const TestPage = (): JSX.Element => {
             </div>
 
             <div className={classes.resultsContainer}>
-                { results.map(x => <AutocompleteResult key={x._id} data={x}/>) }
+                { state.coordsAreValid || (state.coordsAreNull && state.input.length > 0) && 
+                    results.map(x => <AutocompleteResult key={x._id} data={x}/>) 
+                }
             </div>
         </Page>
     )

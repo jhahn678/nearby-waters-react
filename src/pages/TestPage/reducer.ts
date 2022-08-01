@@ -1,11 +1,12 @@
 import { latlng } from "../../types/Autocomplete"
-import { validateCoords } from '../../utils/validateCoords'
+import { coordsAreNull, coordsAreValid } from '../../utils/validateCoords'
 
 type State = {
     queryType: 'ALL' | 'GEOPLACES' | 'WATERBODIES',
     input: string,
     coords: latlng,
-    coordsValid: boolean,
+    coordsAreValid: boolean,
+    coordsAreNull: boolean,
     locationError: boolean,
     fieldsTouched: boolean
 }
@@ -23,7 +24,8 @@ export const initialState: State = {
     queryType: 'ALL',
     input: '',
     coords: { latitude: '', longitude: '' },
-    coordsValid: false,
+    coordsAreValid: false,
+    coordsAreNull: true,
     locationError: false,
     fieldsTouched: false
 }
@@ -39,14 +41,17 @@ export const reducer = (state: State, action: Action): State => {
     }
     else if(action.type === 'LATITUDE'){
         const { coords } = state;
-        const valid = validateCoords({ 
+        const newCoords = { 
             latitude: action.value, 
             longitude: coords.longitude
-        })
+        }
+        const coordsValid = coordsAreValid(newCoords)
+        const coordsNull = coordsAreNull(newCoords)
         return { 
             ...state, 
             fieldsTouched: true,
-            coordsValid: valid,
+            coordsAreValid: coordsValid,
+            coordsAreNull: coordsNull,
             coords: { 
                 ...state.coords, 
                 latitude: action.value
@@ -55,14 +60,17 @@ export const reducer = (state: State, action: Action): State => {
     }
     else if(action.type === 'LONGITUDE'){
         const { coords } = state;
-        const valid = validateCoords({ 
+        const newCoords = { 
             latitude: coords.latitude, 
             longitude: action.value
-        })
+        }
+        const coordsValid = coordsAreValid(newCoords)
+        const coordsNull = coordsAreNull(newCoords)
         return { 
             ...state, 
             fieldsTouched: true, 
-            coordsValid: valid,
+            coordsAreValid: coordsValid,
+            coordsAreNull: coordsNull,
             coords: { 
                 ...state.coords, 
                 longitude: action.value
@@ -80,7 +88,8 @@ export const reducer = (state: State, action: Action): State => {
         return { 
             ...state, 
             fieldsTouched: true, 
-            coordsValid: true,
+            coordsAreValid: true,
+            coordsAreNull: false,
             coords: action.value 
         }
     }
