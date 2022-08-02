@@ -14,4 +14,3 @@ export type StateName =
     'Rhode Island'| 'Vermont'| 'Wisconsin'| 'California'| 'Colorado'| 'New Mexico'| 'Nevada'| 'Utah'| 
     'Arizona'| 'Idaho'| 'Montana'| 'North Dakota'| 'Oregon'| 'South Dakota'| 'Washington'| 'Wyoming'| 
     'Hawaii'| 'Alaska'| 'Kentucky'| 'Massachusetts'| 'Pennsylvania'| 'Virginia'
-

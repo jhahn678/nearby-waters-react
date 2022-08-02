@@ -34,7 +34,10 @@ export type AutocompleteWaterbody = {
     type: 'WATERBODY'
     _id: string,
     name: string,
-    states: [StateAbbreviation],
+    country: string,
+    subregion: string,
+    states: StateAbbreviation[],
+    counties: string[],
     classification: WaterbodyClassifications,
     distanceFrom?: number,
     rank: number
