@@ -54,7 +54,7 @@ export const useAutoComplete = (
             geoplacesClear()
             waterbodiesFetch()
         }
-    },[ input, coords, queryType, 
+    },[ input, coords, queryType, shouldQuery,
         geoplacesClear, waterbodiesClear, 
         geoplacesFetch, waterbodiesFetch
     ])
