@@ -38,9 +38,8 @@
 }
 
 .resultsContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     width: 60vw;
-    padding: 5vw;
+    height: 90vh;
+    padding: 3vh 5vw;
+    overflow-y: scroll;
 }

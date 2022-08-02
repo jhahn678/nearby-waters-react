@@ -40,10 +40,9 @@ export const reducer = (state: State, action: Action): State => {
         }
     }
     else if(action.type === 'LATITUDE'){
-        const { coords } = state;
         const newCoords = { 
             latitude: action.value, 
-            longitude: coords.longitude
+            longitude: state.coords.longitude
         }
         const coordsValid = coordsAreValid(newCoords)
         const coordsNull = coordsAreNull(newCoords)
@@ -52,16 +51,12 @@ export const reducer = (state: State, action: Action): State => {
             fieldsTouched: true,
             coordsAreValid: coordsValid,
             coordsAreNull: coordsNull,
-            coords: { 
-                ...state.coords, 
-                latitude: action.value
-            }
+            coords: newCoords
         }
     }
     else if(action.type === 'LONGITUDE'){
-        const { coords } = state;
         const newCoords = { 
-            latitude: coords.latitude, 
+            latitude: state.coords.latitude, 
             longitude: action.value
         }
         const coordsValid = coordsAreValid(newCoords)
@@ -71,10 +66,7 @@ export const reducer = (state: State, action: Action): State => {
             fieldsTouched: true, 
             coordsAreValid: coordsValid,
             coordsAreNull: coordsNull,
-            coords: { 
-                ...state.coords, 
-                longitude: action.value
-            },
+            coords: newCoords,
         }
     }
     else if(action.type === 'QUERYTYPE'){

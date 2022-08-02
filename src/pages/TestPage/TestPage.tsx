@@ -1,12 +1,15 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { reducer, initialState } from './reducer'
 import { AutocompleteQueryType } from '../../types/Autocomplete'
 import classes from './index.module.css'
 import Page from '../../components/shared/Page'
 import CurrentLocationButton from '../../components/search/CurrentLocationButton/CurrentLocationButton'
-import AutocompleteResult from '../../components/search/AutocompleteResult/AutocompleteResult'
 import { useAutoComplete } from '../../hooks/queries/useAutoComplete'
 import { SegmentedControl, TextInput, Text } from '@mantine/core'
+import { BiSearch } from 'react-icons/bi'
+import AutocompleteWaterbody from '../../components/search/AutocompleteResult/AutocompleteWaterbody'
+import AutocompletePark from '../../components/search/AutocompleteResult/AutocompletePark'
+import AutocompleteGeoplace from '../../components/search/AutocompleteResult/AutocompleteGeoplace'
 
 
 const TestPage = (): JSX.Element => {
@@ -22,6 +25,7 @@ const TestPage = (): JSX.Element => {
             state.input.length > 0
         )
     })
+
     
     return (
         <Page className={classes.container}>
@@ -32,6 +36,7 @@ const TestPage = (): JSX.Element => {
                     size='lg' placeholder='Place or Waterbody'
                     wrapperProps={{ style: { width: '34vw' }}} 
                     onChange={e => dispatch({ type: 'INPUT', value: e.target.value })}
+                    icon={<BiSearch/>}
                 />
                 <Text color='rgb(210,210,210)' 
                 className={classes.tip} size='sm'
@@ -41,9 +46,9 @@ const TestPage = (): JSX.Element => {
                 <SegmentedControl  
                     style={{ width: '34vw', marginTop: '.5em' }} 
                     color="cyan" value={state.queryType} data={[
-                    { label: 'Show All', value: 'ALL' },
-                    { label: 'Show Geoplaces', value: 'GEOPLACES' },
-                    { label: 'Show Waterbodies', value: 'WATERBODIES' }]}  
+                    { label: 'All', value: 'ALL' },
+                    { label: 'Locations', value: 'GEOPLACES' },
+                    { label: 'Waterbodies', value: 'WATERBODIES' }]}  
                     onChange={(value: AutocompleteQueryType) => dispatch({ type: 'QUERYTYPE', value })}
                 />
 
@@ -70,8 +75,12 @@ const TestPage = (): JSX.Element => {
             </div>
 
             <div className={classes.resultsContainer}>
-                { state.coordsAreValid || (state.coordsAreNull && state.input.length > 0) && 
-                    results.map(x => <AutocompleteResult key={x._id} data={x}/>) 
+                { (state.coordsAreValid || (state.coordsAreNull && state.input.length > 0)) && 
+                    results.map(res => (
+                       res.type === 'WATERBODY' ? <AutocompleteWaterbody key={res._id} data={res}/> :
+                       (res.type === 'GEOPLACE' && res.fcode === 'PRK') ? <AutocompletePark  key={res._id} data={res}/> : 
+                       <AutocompleteGeoplace  key={res._id} data={res}/>
+                    )) 
                 }
             </div>
         </Page>
