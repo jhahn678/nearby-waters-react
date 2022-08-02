@@ -1,18 +1,39 @@
-.containerGeoplace{
+.container{
     height: 100px;
     width: 100%;
-    background-color: #b9ab94;
+    border-radius: 5px;
+    margin-bottom: .5em;
+    padding: 1.5em;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
-.containerPark{
-    height: 100px;
-    width: 100%;
-    background-color: #9eb994;
+.icon {
+    background-color: #e8e8e870;
+    padding: .8em;
+    margin-right: 1em;
+    border-radius: 50%;
+    box-sizing: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.containerWaterbody{
-    height: 100px;
-    width: 100%;
-    background-color: #9cb9ce;
+.view{
+    position: absolute;
+    right: 5%;
+}
+
+.geoplace {
+    background-color: #e2d5e9;
+}
+
+.park {
+    background-color: #c8dfc2;
+}
+
+.waterbody {
+    background-color: #bccfdb;
 }
 
