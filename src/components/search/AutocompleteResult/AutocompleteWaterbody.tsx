@@ -4,6 +4,7 @@ import classes from './AutocompleteResult.module.css'
 import { stateAbbrToName } from '../../../utils/stateAbbrToName'
 import { BsWater, BsArrowRight } from 'react-icons/bs'
 import { Title, Text } from '@mantine/core'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
     data: AutocompleteWaterbodyData
@@ -11,8 +12,14 @@ type Props = {
 
 const AutocompleteWaterbody = ({ data }: Props): JSX.Element => {
 
+    const navigate = useNavigate()
+
+    const handleViewInMap = (): void => {
+        // navigate('/map')
+    }
+
     return (
-        <div className={`${classes.waterbody} ${classes.container}`}>
+        <div className={`${classes.waterbody} ${classes.container}`} onClick={handleViewInMap}>
             <div className={classes.icon}><BsWater size={32}/></div>
             <div>
                 <Title order={3} style={{ fontWeight: '500' }} className={classes.title}>{data.name}</Title>
