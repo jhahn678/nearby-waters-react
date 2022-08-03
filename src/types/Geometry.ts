@@ -1,20 +1,18 @@
-import { GeoJsonTypes } from 'geojson'
+import { GeometryObject } from 'geojson'
+import { StateAbbreviation } from './States';
+import { Waterbody, WaterbodyClassifications } from './Waterbody'
 
-type GeometryObject = {
-    type: GeoJsonTypes,
-    coordinates: [
-        longitude: number, 
-        latitude: number
-    ]
-}
-
-type Geometry = {
-    _id: string,
-    osm_id?: number,
-    name: string,
-    classification: string,
+export interface Geometry {
+    _id: string
+    osm_id?: number
+    name: string
+    classification: WaterbodyClassifications
     geometry: GeometryObject
+    states: StateAbbreviation[]
+    parent_waterbody: string | Waterbody
+    geometry_simplified: GeometryObject
+    counties: string[]
+    name_lower: string
 }
 
-
-export default Geometry;
+export default Geometry
