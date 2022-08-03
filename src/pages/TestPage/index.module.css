@@ -1,6 +1,7 @@
 .container{
     display: flex;
     width: 100vw;
+    overflow: hidden;
 }
 
 .searchBox{
@@ -10,6 +11,12 @@
     display: flex;
     flex-direction: column;
     padding: 5vh 3vw;
+    margin-top: 3vh;
+    transition: .3s ease all;
+}
+
+.hideSearchBox{
+    transform: translateX(-40vw);
 }
 
 .tip{
@@ -38,8 +45,39 @@
 }
 
 .resultsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
     width: 60vw;
-    height: 90vh;
-    padding: 3vh 5vw;
+    height: 85vh;
+    margin-top: 5vh;
     overflow-y: scroll;
+    transition: .4s ease all;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.resultsContainer::-webkit-scrollbar{
+    display: none;
+}
+
+.shiftResultsContainer{
+    transform: translateX(-40vw);
+    width: 48vw;
+}
+
+.mapContainer{
+    margin-top: 5vh;
+    flex-shrink: 0;
+    width: 50vw;
+    height: 80vh;
+    border-radius: 8px;
+    background-color: rgb(193, 229, 207);
+    transform: translateX(40vw);
+    transition: .4s ease all;
+}
+
+.showMapContainer{
+    transform: translateX(-40vw);
 }

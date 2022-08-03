@@ -1,3 +1,4 @@
+import { Dispatch } from "react"
 import { latlng } from "../../types/Autocomplete"
 import { coordsAreNull, coordsAreValid } from '../../utils/validateCoords'
 
@@ -8,7 +9,9 @@ type State = {
     coordsAreValid: boolean,
     coordsAreNull: boolean,
     locationError: boolean,
-    fieldsTouched: boolean
+    fieldsTouched: boolean,
+    showMap: boolean,
+    waterbody_id: string | null
 }
 
 type Action = 
@@ -17,7 +20,9 @@ type Action =
 | { type: 'LONGITUDE', value: string }
 | { type: 'QUERYTYPE', value: 'ALL' | 'GEOPLACES' | 'WATERBODIES' }
 | { type: 'SET_COORDS', value: latlng }
-| { type: 'LOCATION_ERROR', value: boolean }
+| { type: 'LOCATION_ERROR' }
+| { type: 'SHOW_WATERBODY', _id: string }
+| { type: 'HIDE_MAP' }
 
 
 export const initialState: State = {
@@ -27,7 +32,9 @@ export const initialState: State = {
     coordsAreValid: false,
     coordsAreNull: true,
     locationError: false,
-    fieldsTouched: false
+    fieldsTouched: false,
+    showMap: false,
+    waterbody_id: null
 }
 
 
@@ -91,8 +98,21 @@ export const reducer = (state: State, action: Action): State => {
             locationError: true
         }
     }
+    else if(action.type === 'SHOW_WATERBODY'){
+        return {
+            ...state,
+            showMap: true,
+            waterbody_id: action._id
+        }
+    }
+    else if(action.type === 'HIDE_MAP'){
+        return {
+            ...state,
+            showMap: false,
+            waterbody_id: null
+        }
+    }
     else{
         return state;
-    }
-            
+    }    
 }
