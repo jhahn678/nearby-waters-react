@@ -1,0 +1,32 @@
+.mapContainer{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  .mapHeader{ 
+    color: #12100e;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: rgba(250,250,250,.8);
+    border-bottom-right-radius: 5px;
+    display: flex;
+    align-items: center;
+    padding: .3em .8em;
+  }
+  
+  .mapHelper{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    padding: .3em .8em;
+    border-bottom-left-radius: 5px;
+    color: #12100e;
+    background-color: rgba(250,250,250,.8)
+  }
