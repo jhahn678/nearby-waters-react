@@ -1,29 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react'
 import classes from './Map.module.css'
-import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
-import MapGL, { Source, Layer } from 'react-map-gl'
-import { v4 as uuid } from 'uuid'
-import Geometry from '../../types/Geometry'
-import GeometryQuery from '../../types/GeometryQuery'
+import MapGL, { Source, Layer, MapLayerMouseEvent } from 'react-map-gl'
+import Waterbody from '../../types/Waterbody'
 
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX;
+
+
 type Props = { 
-    data: Geometry[], 
-    query: GeometryQuery, 
-    setCoords: ({ lngLat }: MapMouseEvent) => void
+    data: Waterbody
 }
 
-const Map = ({ data, query, setCoords }: Props) => {
+const Map = ({ data }: Props) => {
+
+    
 
     return (
         <MapGL
-            
-            id='primary-map'
+            id='primary-map' reuseMaps={true}
             style={{ height: '100%', width: '100%', position: 'relative', borderRadius: '5px' }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
             mapboxAccessToken={process.env.REACT_APP_MAPBOX}
-        />
+        >
+            <Source id="my-data" type="geojson" data={geojson}>
+                <Layer {...layerStyle} />
+            </Source>
+        </MapGL>
     )
 }
 
