@@ -1,6 +1,5 @@
 import { useQuery } from 'react-query'
 import axios from '../../utils/axios'
-import GeometryQuery from '../../types/GeometryQuery'
 
 type GeometryFetchArgs = {
     lat: number,
@@ -15,7 +14,7 @@ const fetchGeometries = async ({ lat, lng, maxdis, search }: GeometryFetchArgs) 
 }
 
 
-export const useGetGeometriesQuery = ({ lat, lng, maxdis, search }: GeometryQuery)  => {
+export const useGetGeometriesQuery = ({ lat, lng, maxdis, search }: GeometryFetchArgs)  => {
 
     const result =  useQuery({
         queryKey: 'geometries', 

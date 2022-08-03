@@ -1,5 +1,5 @@
 import axios from '../../utils/axios'
-import { useQueries } from 'react-query'
+import { useQueries, UseQueryResult } from 'react-query'
 import { 
     AutocompleteGeoplace,
     AutocompleteQuery, 
@@ -29,7 +29,7 @@ const autocompleteGeoplaces = async (
 export const useAutoCompleteQuery = (
     { value, lng, lat }: AutocompleteQuery
 ) => {
-    const results = useQueries([
+    const results = useQueries<[UseQueryResult<AutocompleteGeoplace[], Error>, UseQueryResult<AutocompleteWaterbody[], Error>]>([
         { 
             queryKey: 'autocomplete-geoplaces', 
             queryFn: () => autocompleteGeoplaces({ value, lng, lat }),
