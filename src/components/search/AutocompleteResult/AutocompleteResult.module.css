@@ -1,17 +1,23 @@
 .container{
+    flex-shrink: 0;
     height: 100px;
-    width: 100%;
+    width: 43vw;
     border-radius: 5px;
-    margin-bottom: .5em;
+    margin-bottom: 1em;
     padding: 1.5em;
     display: flex;
-    align-items: center;
     position: relative;
     transition: .3s ease all;
 }
 
 .container:hover{
     transform: scale(1.02);
+    opacity: .95;
+}
+
+.containerSelected{
+    height: 400px;
+    align-items: flex-start;
 }
 
 .icon {
@@ -25,9 +31,22 @@
     align-items: center;
 }
 
+
+.headingContainer{
+    display: flex;
+    align-items: center;
+    margin-top: 1.5em;
+}
+
 .view{
     position: absolute;
     right: 5%;
+}
+.close{
+    position: absolute;
+    right: 5%;
+    transform: scale(1.1);
+    transition: .3s ease all;
 }
 
 .geoplace {
