@@ -1,8 +1,10 @@
-import { useGeolocated, GeolocatedResult } from "react-geolocated";
+import { useGeolocated } from "react-geolocated";
 import { latlng } from "../../../types/Autocomplete";
 import { Button, Text, Loader, MantineSize } from '@mantine/core'
 import { BiCurrentLocation } from 'react-icons/bi'
+import useModalContext from "../../../hooks/contexts/modal/useModalContext";
 import React, { useState } from 'react'
+import { GEOLOCATION_DISABLED_BODY, GEOLOCATION_UNAVAILABLE_BODY} from '../../../hooks/contexts/modal/constants'
 
 
 
@@ -10,14 +12,12 @@ type Props = {
     className?: string,
     onSuccess: (coords: latlng) => void,
     onError?: () => void,
-    onGeolocationDisabled?: () => void,
-    onGeolocationUnavailable?: () => void,
     size?: MantineSize
 }
 
 
 const CurrentLocationButton = ( 
-    { className, onSuccess, onError, onGeolocationDisabled, onGeolocationUnavailable, size='md' }: Props 
+    { className, onSuccess, onError, size='md' }: Props 
 ): JSX.Element => {
     const { isGeolocationAvailable, isGeolocationEnabled, getPosition } = useGeolocated({
         suppressLocationOnMount: true,
@@ -32,13 +32,15 @@ const CurrentLocationButton = (
     })
     
     const [isLoading, setIsLoading] = useState(false)
+
+    const { dispatch: modalDispatch } = useModalContext()
     
       
     const handleCurrentLocation = () => {
-        if(!isGeolocationEnabled && onGeolocationDisabled){
-            onGeolocationDisabled()
-        }else if(!isGeolocationAvailable && onGeolocationUnavailable){
-            onGeolocationUnavailable()
+        if(!isGeolocationEnabled){
+            modalDispatch({ type: 'SHOW_ERROR_MODAL', body: GEOLOCATION_DISABLED_BODY })
+        }else if(!isGeolocationAvailable){
+            modalDispatch({ type: 'SHOW_ERROR_MODAL', body: GEOLOCATION_UNAVAILABLE_BODY })
         }else{
             setIsLoading(true)
             getPosition()
