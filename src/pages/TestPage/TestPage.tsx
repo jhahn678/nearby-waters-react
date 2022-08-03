@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect } from 'react'
+import { GEOLOCATION_DEFAULT_ERROR } from '../../hooks/contexts/modal/constants'
 import { reducer, initialState } from './reducer'
 import { AutocompleteQueryType } from '../../types/Autocomplete'
 import classes from './index.module.css'
@@ -10,11 +11,13 @@ import { BiSearch } from 'react-icons/bi'
 import AutocompleteWaterbody from '../../components/search/AutocompleteResult/AutocompleteWaterbody'
 import AutocompletePark from '../../components/search/AutocompleteResult/AutocompletePark'
 import AutocompleteGeoplace from '../../components/search/AutocompleteResult/AutocompleteGeoplace'
+import useModalContext from '../../hooks/contexts/modal/useModalContext'
 
 
 const TestPage = (): JSX.Element => {
 
     const [state, dispatch] = useReducer(reducer, initialState)
+    const { dispatch: modalDispatch } = useModalContext()
 
     const { results, isError, isLoading } = useAutoComplete({ 
         input: state.input, 
@@ -26,7 +29,6 @@ const TestPage = (): JSX.Element => {
         )
     })
 
-    
     return (
         <Page className={classes.container}>
             <div className={classes.searchBox}>
@@ -42,7 +44,7 @@ const TestPage = (): JSX.Element => {
                 className={classes.tip} size='sm'
                 >Queries should be formatted: Place, State</Text>
                 
-                <Text color='#fefefe' size='lg'>Toggle Output</Text>
+                <Text color='#fefefe' size='md'>Toggle Output</Text>
                 <SegmentedControl  
                     style={{ width: '34vw', marginTop: '.5em' }} 
                     color="cyan" value={state.queryType} data={[
@@ -52,7 +54,7 @@ const TestPage = (): JSX.Element => {
                     onChange={(value: AutocompleteQueryType) => dispatch({ type: 'QUERYTYPE', value })}
                 />
 
-                <Text color='#fefefe' size='lg' style={{ marginTop: '2em'}}>
+                <Text color='#fefefe' size='md' style={{ marginTop: '1.5em'}}>
                     Add Query Location
                 </Text>
                 <div className={classes.lnglatInputs}>
@@ -69,9 +71,14 @@ const TestPage = (): JSX.Element => {
                 </div>
                 <CurrentLocationButton 
                     onSuccess={coords => dispatch({ type: 'SET_COORDS', value: coords})}
-                    onError={() => dispatch({ type: 'LOCATION_ERROR', value: true })}
+                    onError={() => modalDispatch({ type: 'SHOW_ERROR_MODAL', body: GEOLOCATION_DEFAULT_ERROR })}
                     className={classes.currentLocationButton}
                 />
+
+                <Text color='#fefefe' size='md' style={{ marginTop: '2em'}}>
+                    The above is a demonstration of the in-app autocomplete search bar.
+                    Set a location to simulate location based results within the United States
+                </Text>
             </div>
 
             <div className={classes.resultsContainer}>

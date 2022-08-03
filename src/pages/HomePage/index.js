@@ -7,7 +7,7 @@ import { Button, TextInput, Select, Text, Loader } from '@mantine/core'
 import { useGeolocated } from 'react-geolocated'
 import { useGetGeometriesQuery } from '../../hooks/queries/useGetGeometriesQuery.ts'
 import Map from '../../components/map/Map.tsx'
-import ErrorModal from '../../components/modals/ErrorModal'
+import ErrorModal from '../../components/modals/ErrorModal/ErrorModal'
 import { LocationErrors } from '../../utils/locationErrors.ts'
 
 const HomePage = () => {
@@ -59,10 +59,6 @@ const HomePage = () => {
 
   return (
     <Page className={classes.container}>
-      <ErrorModal visible={state?.currentLocation.showError} 
-        setVisible={() => dispatch({ type: 'HIDE_MODAL'})} 
-        error={state?.currentLocation.error}
-      />
       <div className={classes.sidebox}>
         <div className={classes.form}>
             <TextInput label='Filter by name' style={{ marginBottom: '2%'}}
