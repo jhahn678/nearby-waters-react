@@ -1,29 +1,49 @@
-import React, { useState, useEffect, useRef } from 'react'
-import classes from './Map.module.css'
-import MapGL, { Source, Layer, MapLayerMouseEvent } from 'react-map-gl'
-import Waterbody from '../../types/Waterbody'
-
-
+import { FeatureCollection } from 'geojson'
+import React, { useEffect, useRef } from 'react'
+import { Button } from '@mantine/core'
+import { BsArrowLeft } from 'react-icons/bs'
+import MapGL, { Source, Layer, MapRef } from 'react-map-gl'
+import bbox from '@turf/bbox'
 
 
 type Props = { 
-    data: Waterbody
+    data: FeatureCollection | undefined,
+    dismissMap: () => void
 }
 
-const Map = ({ data }: Props) => {
+const Map = ({ data, dismissMap }: Props) => {
 
-    
+    const mapRef = useRef<MapRef>(null)
+
+    useEffect(() => {
+        if(mapRef.current && data){
+            const [minLng, minLat, maxLng, maxLat] = bbox(data);
+            mapRef.current.fitBounds(
+                [ [minLng, minLat], [maxLng, maxLat] ],
+                {padding: 40, duration: 1000}
+            )
+        }
+    },[data])
 
     return (
         <MapGL
-            id='primary-map' reuseMaps={true}
-            style={{ height: '100%', width: '100%', position: 'relative', borderRadius: '5px' }}
+            id='primary-map' reuseMaps={true} ref={mapRef}
+            style={{ flex: 1, position: 'relative', borderRadius: '5px' }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
             mapboxAccessToken={process.env.REACT_APP_MAPBOX}
+            initialViewState={{ longitude: -98.4, latitude: 37.8, zoom: 2}}
         >
-            <Source id="my-data" type="geojson" data={geojson}>
-                <Layer {...layerStyle} />
-            </Source>
+            { data &&
+                <Source id="waterbody" type="geojson" data={data}>
+                    <Layer type='fill' id='waterbody-polygon' paint={{ "fill-color": '#fc03cf' }} filter={['==', '$type', 'Polygon']}/>
+                    <Layer type='line' id='waterbody-line' paint={{ 'line-color': '#fc03cf', "line-width": 1.5 }}/>
+                </Source>
+            }
+            <Button size='lg' color='lightblue' styles={{ 
+                root: { position: 'absolute', zIndex: 100, borderRadius: 0,
+                left: 0, top: 0, borderBottomRightRadius: 8, height: 64 }}}
+                onClick={() => dismissMap()}><BsArrowLeft size={32} color='black'/>
+            </Button>
         </MapGL>
     )
 }

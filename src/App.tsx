@@ -19,7 +19,15 @@ const queryClient = new QueryClient({
 const App = (): JSX.Element => {
     return (
       <QueryClientProvider client={queryClient}>
-        <MantineProvider withGlobalStyles withNormalizeCSS>
+        <MantineProvider withGlobalStyles withNormalizeCSS
+          theme={{
+            primaryShade: 2,
+            colors: {
+              grayblue: ["#F0F4F5", "#D4E1E3", "#B8CED0", "#9DBBBE", "#81A7AC", "#65949A", "#51767B", "#3D595C", "#293B3D", "#141E1F"],
+              lightblue: ["#EEF3F6","#D1DEE6","#B3C8D6","#95B3C6","#779EB6","#5988A6","#476D85","#355264","#243642","#121B21"]
+            }
+          }}
+        >
           <MapProvider>
             <ModalContextProvider>
               <ErrorModal/>
