@@ -1,0 +1,38 @@
+.container{
+    flex-shrink: 0;
+    height: 72px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    padding: 1em 1.5em;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: #adc6c9;
+    cursor: pointer;
+}
+
+.heading{
+    display: flex;
+    align-items: center;
+}
+
+.details{
+    margin-top: 1.5em;
+}
+
+.view{
+    position: absolute;
+    right: 5%;
+}
+
+.icon {
+    background-color: #e8e8e870;
+    padding: .8em;
+    margin-right: 1em;
+    border-radius: 50%;
+    box-sizing: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

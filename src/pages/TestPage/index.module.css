@@ -5,6 +5,8 @@
 }
 
 .searchBox{
+    flex-shrink: 0;
+    height: 87vh;
     width: 40vw;
     background-color: rgba(169, 187, 203, 0.3);
     border-top-right-radius: 5px;
@@ -15,8 +17,17 @@
     transition: .3s ease all;
 }
 
+.searchBoxInputFields{
+    display: flex;
+    flex-direction: column;
+}
+
 .hideSearchBox{
     transform: translateX(-40vw);
+}
+
+.hideInputFields{
+    height: 0
 }
 
 .tip{
@@ -44,13 +55,21 @@
     width: 16.6vw
 }
 
+.label{
+    color: black;
+}
+.label:hover{
+    color: black;
+}
+
 .resultsContainer{
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-shrink: 0;
     width: 60vw;
-    height: 85vh;
+    height: 84vh;
+    padding-top: 1vh;
     margin-top: 5vh;
     overflow-y: scroll;
     transition: .4s ease all;
@@ -81,3 +100,4 @@
 .showMapContainer{
     transform: translateX(-40vw);
 }
+
