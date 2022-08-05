@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react'
+import React, { useReducer, useEffect, useState, useRef, DragEventHandler } from 'react'
 import { GEOLOCATION_DEFAULT_ERROR } from '../../hooks/contexts/modal/constants'
 import { reducer, initialState } from './reducer'
 import { AutocompleteQueryType } from '../../types/Autocomplete'
@@ -25,9 +25,17 @@ const TestPage = (): JSX.Element => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const { dispatch: modalDispatch } = useModalContext()
 
+    const [within, setWithin] = useState(50)
+    const resultsContainer = useRef<HTMLDivElement>(null)
+
     const { data: waterbody, refetch: fetchWaterbody } = useGetWaterbody(state.waterbody_id)
-    const { data: waterbodiesResult, refetch: fetchWaterbodies } = useGetWaterbodies({
-        coords: state.coords, within: 50,
+    const { 
+        data: waterbodyResults, 
+        fetchNextPage, 
+        isFetchingNextPage,
+        totalResults 
+    } = useGetWaterbodies({
+        coords: state.coords, within,
         shouldQuery: state.shouldQueryLocation
     })
     const { results, isError, isLoading } = useAutoComplete({ 
@@ -35,6 +43,21 @@ const TestPage = (): JSX.Element => {
         queryType: state.autocompleteType,
         shouldQuery: state.shouldQueryAutocomplete
     })
+
+    const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+        const container = resultsContainer.current
+        if(
+            container && 
+            !isFetchingNextPage && 
+            (container.scrollTop / container.scrollHeight) > .75
+        ){
+            fetchNextPage()
+        }
+    }
+
+    useEffect(() => {
+        console.log(waterbodyResults)
+    },[waterbodyResults])
 
 
     useEffect(() => { if(state.waterbody_id) fetchWaterbody() }, [state.waterbody_id])
@@ -97,13 +120,13 @@ const TestPage = (): JSX.Element => {
                 </motion.div>
                 
                 <SearchNearMeButton coords={state.coords}
-                    isActive={state.queryingNearMe} numberOfResults={waterbodiesResult?.metadata.total || 0}
+                    isActive={state.queryingNearMe} numberOfResults={totalResults || 0}
                     onSelect={coords => dispatch({ type: 'SELECT_NEAR_ME', coords })} 
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
                 />
             </div>
 
-            <div className={`${classes.resultsContainer} ${state.showMap && classes.shiftResultsContainer}`}>
+            <div className={`${classes.resultsContainer} ${state.showMap && classes.shiftResultsContainer}`} ref={resultsContainer} onScroll={handleScroll}>
                 { state.shouldQueryAutocomplete && 
                     results.map(res => (
                         res.type === 'WATERBODY' ? (
@@ -125,13 +148,15 @@ const TestPage = (): JSX.Element => {
                         )
                     )) 
                 }
-                { state.shouldQueryLocation &&
-                    waterbodiesResult?.data.map(wb => 
-                        <AutocompleteWaterbody key={wb._id} data={wb} 
-                            isSelected={state.waterbody_id === wb._id}
-                            onSelect={() => dispatch({ type: 'SELECT_WATERBODY', _id: wb._id })}
-                            onClose={() => dispatch({ type: 'CLEAR_WATERBODY' })}
-                        />
+                { state.shouldQueryLocation && 
+                    waterbodyResults?.pages.map(page => 
+                        page.data.map(wb => (
+                            <AutocompleteWaterbody key={wb._id} data={wb} 
+                                isSelected={state.waterbody_id === wb._id}
+                                onSelect={() => dispatch({ type: 'SELECT_WATERBODY', _id: wb._id })}
+                                onClose={() => dispatch({ type: 'CLEAR_WATERBODY' })}
+                            />
+                        ))
                     )
                 }
             </div>

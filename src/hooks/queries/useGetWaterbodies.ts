@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import axios from '../../utils/axios'
 import { Waterbody } from '../../types/Waterbody'
 import { latlng } from '../../types/Autocomplete'
@@ -6,36 +6,59 @@ import { latlng } from '../../types/Autocomplete'
 interface WaterbodyResult {
     metadata: { 
         total: number, 
-        page: number 
+        page: number,
+        limit: number 
     }
     data: Waterbody[]
 }
 
-type WaterbodyQuery = {
-    coords: latlng,
-    /**
-     * Distance in miles
-     */
+interface WaterbodyQuery {
+    /** Coords for setting query location */
+    coords?: latlng,
+    /** Distance in miles */
     within?: number,
-    page?: number,
-    limit?: number,
+    /** Controls query enabled */
     shouldQuery: boolean
+    /** Size of page to return */
+    limit?: number
 }
 
-const getWaterbodies = async ({ coords, within, page, limit }: WaterbodyQuery): Promise<WaterbodyResult> => {
-    const { latitude, longitude } = coords;
-    const result = await axios.get(
-        `/waterbodies?lnglat=${longitude},${latitude}&within=${within}&page=${page}&limit=${limit}`
-    )
+const getWaterbodies = async (
+    { coords, within, limit=50 }: WaterbodyQuery,
+    pageParam: number = 1
+): Promise<WaterbodyResult> => {
+    let url = `/waterbodies?page=${pageParam}&limit=${limit}&`
+    if(coords) url += `lnglat=${coords.longitude},${coords.latitude}&`
+    if(within) url += `within=${within}&`
+    const result = await axios.get(url)
     return result.data;
 }
 
-export const useGetWaterbodies = (params: WaterbodyQuery) => {
+// export const useGetWaterbodies = (params: WaterbodyQuery) => {
 
-    const result = useQuery<WaterbodyResult, Error>({
+//     const result = useQuery<WaterbodyResult, Error>({
+//         queryKey: 'waterbodies-query',
+//         queryFn: () => getWaterbodies(params),
+//         enabled: params.shouldQuery
+//     })
+//     return result;
+// }
+
+export const useGetWaterbodies = (params: WaterbodyQuery) => {
+    
+    const result = useInfiniteQuery<WaterbodyResult, Error>({
         queryKey: 'waterbodies-query',
-        queryFn: () => getWaterbodies(params),
-        enabled: params.shouldQuery
+        queryFn: ({ pageParam=1 }) => getWaterbodies(params, pageParam),
+        enabled: params.shouldQuery,
+        getNextPageParam: ({ metadata: x }) => {
+            if(x.limit * (x.page - 1) < x.total){
+                return x.page + 1
+            }
+        }
     })
-    return result;
+
+    return {
+        totalResults: result.data?.pages[0].metadata.total,
+        ...result
+    }
 }

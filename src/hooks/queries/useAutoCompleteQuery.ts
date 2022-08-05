@@ -9,7 +9,7 @@ const autocompleteWaterbodies = async (
     { value, lng, lat }: AutocompleteQuery
 ): Promise<Waterbody[]> => {
     let endpoint = `/autocomplete/waterbodies?value=${value}`
-    if(lng && lat) endpoint = `/autocomplete/waterbodies?value=${value}&lnglat=${lng},${lat}`
+    if(lng && lat) endpoint += `&lnglat=${lng},${lat}`
     const res = await axios.get(endpoint)
     return res.data;
 }
@@ -18,7 +18,7 @@ const autocompleteGeoplaces = async (
     { value, lng, lat }: AutocompleteQuery 
 ): Promise<Geoplace[]> => {
     let endpoint = `/autocomplete/geoplaces?value=${value}`
-    if(lng && lat) endpoint = `/autocomplete/geoplaces?value=${value}&lnglat=${lng},${lat}`
+    if(lng && lat) endpoint += `&lnglat=${lng},${lat}`
     const res = await axios.get(endpoint)
     return res.data;
 }
