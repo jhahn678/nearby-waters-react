@@ -1,15 +1,13 @@
 import axios from '../../utils/axios'
 import { useQueries, UseQueryResult } from 'react-query'
-import { 
-    AutocompleteGeoplace,
-    AutocompleteQuery, 
-    AutocompleteWaterbody
-} from '../../types/Autocomplete'
+import { AutocompleteQuery } from '../../types/Autocomplete'
+import Geoplace from '../../types/Geoplace'
+import Waterbody from '../../types/Waterbody'
 
 
 const autocompleteWaterbodies = async (
     { value, lng, lat }: AutocompleteQuery
-): Promise<AutocompleteWaterbody[]> => {
+): Promise<Waterbody[]> => {
     let endpoint = `/autocomplete/waterbodies?value=${value}`
     if(lng && lat) endpoint = `/autocomplete/waterbodies?value=${value}&lnglat=${lng},${lat}`
     const res = await axios.get(endpoint)
@@ -18,7 +16,7 @@ const autocompleteWaterbodies = async (
 
 const autocompleteGeoplaces = async (
     { value, lng, lat }: AutocompleteQuery 
-): Promise<AutocompleteGeoplace[]> => {
+): Promise<Geoplace[]> => {
     let endpoint = `/autocomplete/geoplaces?value=${value}`
     if(lng && lat) endpoint = `/autocomplete/geoplaces?value=${value}&lnglat=${lng},${lat}`
     const res = await axios.get(endpoint)
@@ -29,7 +27,7 @@ const autocompleteGeoplaces = async (
 export const useAutoCompleteQuery = (
     { value, lng, lat }: AutocompleteQuery
 ) => {
-    const results = useQueries<[UseQueryResult<AutocompleteGeoplace[], Error>, UseQueryResult<AutocompleteWaterbody[], Error>]>([
+    const results = useQueries<[UseQueryResult<Geoplace[], Error>, UseQueryResult<Waterbody[], Error>]>([
         { 
             queryKey: 'autocomplete-geoplaces', 
             queryFn: () => autocompleteGeoplaces({ value, lng, lat }),
