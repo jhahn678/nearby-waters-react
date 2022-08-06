@@ -29,15 +29,15 @@ const SearchNearLocationCard = (
     useEffect(() => {
         if(selectedGeoplace && containerHeight === 90){
             setContainerPosition(0)
-            const delayHeight = setTimeout(() => setContainerHeight(250), 350)
-            const delayDetails = setTimeout(() => setShowDetails(true), 400)
+            const delayHeight = setTimeout(() => setContainerHeight(200), 350)
+            const delayDetails = setTimeout(() => setShowDetails(true), 450)
             return () => { clearTimeout(delayHeight); clearTimeout(delayDetails) }
         }
-        if(!selectedGeoplace && containerHeight === 250){
+        if(!selectedGeoplace && containerHeight === 200){
             setShowDetails(false)
             setContainerHeight(90)
-            const delay = setTimeout(() => setContainerPosition('100vw'), 200)
-            return () => clearTimeout(delay)
+            const delayPosition = setTimeout(() => setContainerPosition('100vw'), 200)
+            return () => clearTimeout(delayPosition)
         } 
     },[selectedGeoplace])
 
