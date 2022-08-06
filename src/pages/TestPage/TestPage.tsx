@@ -25,21 +25,19 @@ const TestPage = (): JSX.Element => {
 
     const [state, dispatch] = useReducer(reducer, initialState)
     const { dispatch: modalDispatch } = useModalContext()
-
+    
     const resultsContainer = useRef<HTMLDivElement>(null)
 
-    const { 
-        data: waterbody, 
-        refetch: fetchWaterbody 
-    } = useGetWaterbody(state.waterbody_id)
-
+    const { data: waterbody, refetch: fetchWaterbody } = useGetWaterbody(state.waterbody_id)
+    
     const { 
         data: waterbodyResults, 
         fetchNextPage, 
         isFetchingNextPage,
         totalResults 
     } = useGetWaterbodies({
-        coords: state.coords, within: state.within,
+        coords: state.coords, 
+        within: state.within,
         shouldQuery: state.shouldQueryLocation
     })
 
@@ -48,7 +46,8 @@ const TestPage = (): JSX.Element => {
         isError, 
         isLoading 
     } = useAutoComplete({ 
-        input: state.input, coords: state.coords, 
+        input: state.input, 
+        coords: state.coords, 
         queryType: state.autocompleteType,
         shouldQuery: state.shouldQueryAutocomplete
     })
@@ -77,7 +76,13 @@ const TestPage = (): JSX.Element => {
 
     return (
         <Page className={classes.container}>
-            <div className={`${classes.searchBox} ${state.showMap && classes.hideSearchBox}`}>
+            <motion.div 
+                className={classes.searchBox} 
+                animate={{
+                    x: state.showMap ? '-40vw' : 0,
+                    transition: { duration: 1, type: 'spring' }
+                }}
+            >
 
                 <SearchNearLocationCard
                     selectedGeoplace={state.selectedGeoplace} 
@@ -85,9 +90,15 @@ const TestPage = (): JSX.Element => {
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
                 />
                 
-                <motion.div transition={{ duration: .8, type: 'spring'}}
+                <motion.div
                     className={classes.searchBoxInputFields} 
-                    animate={{ x: inputBoxPosition }}
+                    animate={{ 
+                        x: inputBoxPosition,
+                        transition: {
+                            duration: .8,
+                            type: 'spring'
+                        }
+                    }}
                 >
                     <Text color='#fefefe' size='lg'>Search By Place or Waterbody</Text>
                     <TextInput className={classes.searchBar} value={state.input}
@@ -144,11 +155,18 @@ const TestPage = (): JSX.Element => {
                     onSelect={coords => dispatch({ type: 'SELECT_NEAR_ME', coords })} 
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
                 />
-            </div>
 
-            <div className={
-            `${classes.resultsContainer} ${state.showMap && classes.shiftResultsContainer}`
-            } ref={resultsContainer} onScroll={handleScroll}>
+            </motion.div>
+
+            <motion.div 
+                className={classes.resultsContainer} 
+                ref={resultsContainer} onScroll={handleScroll}
+                animate={{ 
+                    x: state.showMap ? '-40vw' : 0,
+                    width: state.showMap ? '48vw' : '60vw',
+                    transition: { duration: 1, type: 'spring' }
+                }}
+            >
                 { state.shouldQueryAutocomplete && 
                     results.map(res => (
                         res.type === 'WATERBODY' ? (
@@ -181,14 +199,20 @@ const TestPage = (): JSX.Element => {
                         ))
                     )
                 }
-            </div>
+            </motion.div>
 
-            <div className={`${classes.mapContainer} ${state.showMap && classes.showMapContainer}`}>
+            <motion.div 
+                className={classes.mapContainer} 
+                animate={{ 
+                    x: state.showMap ? '-40vw' : 0,
+                    transition: { duration: 1, type: 'spring' }
+                }}
+            >
                 <Map 
                     data={waterbodyToFeatureCollection(waterbody)} 
                     dismissMap={() => dispatch({ type: 'CLEAR_WATERBODY' })}
                 />
-            </div>
+            </motion.div>
 
         </Page>
     )

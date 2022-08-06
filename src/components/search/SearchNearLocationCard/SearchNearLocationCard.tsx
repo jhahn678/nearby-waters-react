@@ -24,17 +24,19 @@ const SearchNearLocationCard = (
 
     const [containerHeight, setContainerHeight] = useState(90)
     const [showDetails, setShowDetails] = useState(false)
-    const [containerPosition, setContainerPosition] = useState<number | string>('50vw')
+    const [containerPosition, setContainerPosition] = useState<number | string>('100vw')
 
     useEffect(() => {
         if(selectedGeoplace && containerHeight === 90){
             setContainerPosition(0)
-            const delay = setTimeout(() => setContainerHeight(250), 250)
-            return () => clearTimeout(delay)
+            const delayHeight = setTimeout(() => setContainerHeight(250), 350)
+            const delayDetails = setTimeout(() => setShowDetails(true), 400)
+            return () => { clearTimeout(delayHeight); clearTimeout(delayDetails) }
         }
         if(!selectedGeoplace && containerHeight === 250){
+            setShowDetails(false)
             setContainerHeight(90)
-            const delay = setTimeout(() => setContainerPosition('50vw'), 200)
+            const delay = setTimeout(() => setContainerPosition('100vw'), 200)
             return () => clearTimeout(delay)
         } 
     },[selectedGeoplace])
@@ -46,34 +48,42 @@ const SearchNearLocationCard = (
                 x: containerPosition,
                 height: containerHeight,
                 transition: {
-                    delay: selectedGeoplace ? .2 : 0,
-                    duration: .5,
+                    duration: .7,
                     type: 'spring'
                 }
             }}
             className={`${classes.container} ${handleBackgroundColor()}`}
         >
-        { selectedGeoplace && <>
-            <div className={classes.heading}>
-                <div className={classes.icon}>
-                    { selectedGeoplace.fcode === 'PRK' ? 
-                        <BsTree size={24}/> : <BsFlag size={24}/> 
-                    }
+        { selectedGeoplace &&
+            <>
+                <div className={classes.heading}>
+                    <div className={classes.icon}>
+                        { selectedGeoplace.fcode === 'PRK' ? 
+                            <BsTree size={24}/> : <BsFlag size={24}/> 
+                        }
+                    </div>
+                    <div>                    
+                        <Title order={4} style={{ fontWeight: '500' }}>
+                            {selectedGeoplace.name}
+                        </Title>
+                        <Text>{selectedGeoplace.county}, {selectedGeoplace.state}</Text>
+                    </div>
+                    <BsX size={32} className={classes.view} onClick={onClose}/> 
                 </div>
-                <div>                    
-                    <Title order={4} style={{ fontWeight: '500' }}>
-                        {selectedGeoplace.name}
-                    </Title>
-                    <Text>{selectedGeoplace.county}, {selectedGeoplace.state}</Text>
-                </div>
-                <BsX size={32} className={classes.view} onClick={onClose}/> 
-            </div>
-            { showDetails &&
-                <motion.div className={classes.details} initial={{ opacity: 0}} animate={{ opacity: 1}}>
-                    <Title order={5}>Showing {numberOfResults} results</Title>
-                </motion.div>  
-            }   
-        </>}   
+                { showDetails && 
+                    <>
+                        <motion.div 
+                            className={classes.details} 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1, transition: { duration: .1 }}}>
+                            <Title order={5}>Showing {numberOfResults} results</Title>
+                        </motion.div>  
+                        <Text size='md'>Latitude: {selectedGeoplace.geometry.coordinates[1]}</Text>
+                        <Text size='md'>Longitude: {selectedGeoplace.geometry.coordinates[0]}</Text>
+                    </>
+                } 
+            </>
+        }   
         </motion.div>
     )
 }

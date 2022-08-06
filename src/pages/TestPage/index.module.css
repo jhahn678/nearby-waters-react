@@ -15,7 +15,6 @@
     flex-direction: column;
     padding: 5vh 3vw;
     margin-top: 3vh;
-    transition: .3s ease all;
     overflow: hidden;
 }
 
@@ -24,9 +23,6 @@
     flex-direction: column;
 }
 
-.hideSearchBox{
-    transform: translateX(-40vw);
-}
 
 .hideInputFields{
     height: 0
@@ -74,18 +70,12 @@
     padding-top: 1vh;
     margin-top: 5vh;
     overflow-y: scroll;
-    transition: .4s ease all;
     scroll-behavior: smooth;
     scrollbar-width: none;
 }
 
 .resultsContainer::-webkit-scrollbar{
     display: none;
-}
-
-.shiftResultsContainer{
-    transform: translateX(-40vw);
-    width: 48vw;
 }
 
 .mapContainer{
@@ -95,11 +85,7 @@
     height: 80vh;
     border-radius: 8px;
     background-color: rgb(193, 229, 207);
-    transform: translateX(40vw);
-    transition: .4s ease all;
 }
 
-.showMapContainer{
-    transform: translateX(-40vw);
-}
+
 

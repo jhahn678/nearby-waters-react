@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useState, useEffect } from 'react'
+import React, { MouseEventHandler, useState, useEffect, useRef } from 'react'
 import classes from './SearchNearMeButton.module.css'
 import { BsCursor, BsSearch, BsX } from 'react-icons/bs'
 import { Title, Loader, Text } from '@mantine/core'
@@ -22,6 +22,9 @@ type Props = {
 
 const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberOfResults }: Props): JSX.Element => {
 
+
+    const containerRef = useRef<HTMLDivElement>(null)
+
     const { getCurrentLocation, isLoading } = useCurrentLocation({ onSuccess: onSelect })
 
     const handleClick = () => !isActive ? getCurrentLocation() : null
@@ -36,8 +39,10 @@ const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberO
     const [showDetails, setShowDetails] = useState(false)
 
     useEffect(() => {
-        if(isActive) {
-            const delayPosition = setTimeout(() => setContainerPosition('-65vh'), 100)
+        const container = containerRef.current
+        if(container && isActive) {
+            const offset = (container.offsetTop - 48) * -1
+            const delayPosition = setTimeout(() => setContainerPosition(offset), 100)
             const delayHeight = setTimeout(() => setContainerHeight(200), 400)
             const delayDetails = setTimeout(() => setShowDetails(true), 500)
             return () => { clearTimeout(delayPosition); clearTimeout(delayHeight); clearTimeout(delayDetails) }
@@ -57,10 +62,16 @@ const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberO
     },[isActive, hide])
 
     return (
-        <motion.div 
+        <motion.div ref={containerRef}
             className={classes.container}
-            animate={{ height: containerHeight, y: containerPosition }}
-            transition={{ duration: .7, type: 'spring'}}
+            animate={{ 
+                height: containerHeight, 
+                y: containerPosition,
+                transition: {
+                    duration: .8,
+                    type: 'spring'
+                } 
+            }}
             whileHover={{ scale: 1.02 }}
             onClick={handleClick}
         >
@@ -79,13 +90,15 @@ const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberO
                         <BsSearch size={24} className={classes.view}/> 
                 }
             </div>
-            { showDetails && <motion.div className={classes.details}>
-                <Title order={5} style={{ display: 'flex', alignItems: 'center'}}>
-                    Showing {numberOfResults || <Loader size='xs' style={{ paddingLeft: 3, paddingRight: 3 }}/>} results near:
-                </Title>
-                <Text size='md'>Latitude: {coords.latitude}</Text>
-                <Text size='md'>Longitude: {coords.longitude}</Text>
-            </motion.div>}
+            { showDetails && 
+                <div className={classes.details}>
+                    <Title order={5} style={{ display: 'flex', alignItems: 'center'}}>
+                        Showing {numberOfResults || <Loader size='xs' style={{ paddingLeft: 3, paddingRight: 3 }}/>} results near:
+                    </Title>
+                    <Text size='md'>Latitude: {coords.latitude}</Text>
+                    <Text size='md'>Longitude: {coords.longitude}</Text>
+                </div>
+            }
         </motion.div>
     )
 }

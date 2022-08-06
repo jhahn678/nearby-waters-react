@@ -8,10 +8,13 @@ import bbox from '@turf/bbox'
 
 type Props = { 
     data: FeatureCollection | undefined,
-    dismissMap: () => void
+    showDismiss?: boolean,
+    dismissMap?: () => void
 }
 
-const Map = ({ data, dismissMap }: Props) => {
+const Map = ({ data, showDismiss=false, dismissMap }: Props) => {
+
+    const handleDismiss = () => dismissMap && dismissMap()
 
     const mapRef = useRef<MapRef>(null)
 
@@ -39,11 +42,13 @@ const Map = ({ data, dismissMap }: Props) => {
                     <Layer type='line' id='waterbody-line' paint={{ 'line-color': '#fc03cf', "line-width": 1.5 }}/>
                 </Source>
             }
-            <Button size='lg' color='lightblue' styles={{ 
-                root: { position: 'absolute', zIndex: 100, borderRadius: 0,
-                left: 0, top: 0, borderBottomRightRadius: 8, height: 64 }}}
-                onClick={() => dismissMap()}><BsArrowLeft size={32} color='black'/>
-            </Button>
+            { showDismiss &&
+                <Button size='lg' color='lightblue' styles={{ 
+                    root: { position: 'absolute', zIndex: 100, borderRadius: 0,
+                    left: 0, top: 0, borderBottomRightRadius: 8, height: 64 }}}
+                    onClick={handleDismiss}><BsArrowLeft size={32} color='black'/>
+                </Button>
+            }
         </MapGL>
     )
 }
