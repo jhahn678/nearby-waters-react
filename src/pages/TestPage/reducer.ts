@@ -8,6 +8,7 @@ type State = {
     coords: latlng,
     coordsAreValid: boolean,
     coordsAreNull: boolean,
+    within: number,
     locationError: boolean,
     fieldsTouched: boolean,
     showMap: boolean,
@@ -15,7 +16,8 @@ type State = {
     selectedGeoplace: Geoplace | null
     queryingNearMe: boolean
     shouldQueryLocation: boolean
-    shouldQueryAutocomplete: boolean
+    shouldQueryAutocomplete: boolean,
+    previousCoords: latlng
 }
 
 type Action = 
@@ -36,8 +38,10 @@ type Action =
 export const initialState: State = {
     input: '',
     coords: { latitude: '', longitude: '' },
+    previousCoords:{ latitude: '', longitude: '' },
     coordsAreValid: false,
     coordsAreNull: true,
+    within: 50,
     shouldQueryLocation: false,
     shouldQueryAutocomplete: false,
     autocompleteType: 'ALL',
@@ -46,7 +50,7 @@ export const initialState: State = {
     showMap: false,
     waterbody_id: null,
     selectedGeoplace: null,
-    queryingNearMe: false
+    queryingNearMe: false,
 }
 
 
@@ -149,6 +153,7 @@ export const reducer = (state: State, action: Action): State => {
             shouldQueryLocation: true,
             shouldQueryAutocomplete: false,
             selectedGeoplace: action.geoplace,
+            previousCoords: state.coords,
             coords: { 
                 longitude: coordinates[0], 
                 latitude: coordinates[1]
@@ -158,16 +163,13 @@ export const reducer = (state: State, action: Action): State => {
     else if(action.type === 'CLEAR_LOCATION'){
         return {
             ...state,
-            shouldQueryAutocomplete: false,
+            shouldQueryAutocomplete: true,
             shouldQueryLocation: false,
             selectedGeoplace: null,
             coordsAreNull: true,
             coordsAreValid: false,
             queryingNearMe: false,
-            coords: {
-                latitude: '',
-                longitude: ''
-            }
+            coords: state.previousCoords
         }
     }
     else if(action.type === 'SELECT_NEAR_ME'){

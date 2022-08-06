@@ -1,0 +1,45 @@
+.container{
+    position: absolute;
+    height: 84px;
+    width: 34vw;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    padding: 1em 1.5em;
+    display: flex;
+    flex-direction: column;
+}
+
+.heading{
+    display: flex;
+    align-items: center;
+}
+
+.details{
+    margin-top: 1.5em
+}
+
+.view{
+    position: absolute;
+    right: 5%;
+    cursor: pointer;
+}
+
+.icon {
+    background-color: #e8e8e870;
+    padding: .8em;
+    margin-right: 1em;
+    border-radius: 50%;
+    box-sizing: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.place {
+    background-color: #e2d5e9;
+}
+
+.park {
+    background-color: #c8dfc2;
+}
+

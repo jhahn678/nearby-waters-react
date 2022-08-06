@@ -5,6 +5,7 @@
 }
 
 .searchBox{
+    position: relative;
     flex-shrink: 0;
     height: 87vh;
     width: 40vw;
@@ -15,6 +16,7 @@
     padding: 5vh 3vw;
     margin-top: 3vh;
     transition: .3s ease all;
+    overflow: hidden;
 }
 
 .searchBoxInputFields{

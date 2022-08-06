@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState, useRef, DragEventHandler } from 'react'
+import React, { useReducer, useEffect, useRef, useState } from 'react'
 import { GEOLOCATION_DEFAULT_ERROR } from '../../hooks/contexts/modal/constants'
 import { reducer, initialState } from './reducer'
 import { AutocompleteQueryType } from '../../types/Autocomplete'
@@ -18,6 +18,7 @@ import { waterbodyToFeatureCollection } from '../../utils/geojsonConversions'
 import { useGetWaterbodies } from '../../hooks/queries/useGetWaterbodies'
 import SearchNearMeButton from '../../components/search/SearchNearMeButton/SearchNearMeButton'
 import { motion } from 'framer-motion'
+import SearchNearLocationCard from '../../components/search/SearchNearLocationCard/SearchNearLocationCard'
 
 
 const TestPage = (): JSX.Element => {
@@ -25,39 +26,51 @@ const TestPage = (): JSX.Element => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const { dispatch: modalDispatch } = useModalContext()
 
-    const [within, setWithin] = useState(50)
     const resultsContainer = useRef<HTMLDivElement>(null)
 
-    const { data: waterbody, refetch: fetchWaterbody } = useGetWaterbody(state.waterbody_id)
+    const { 
+        data: waterbody, 
+        refetch: fetchWaterbody 
+    } = useGetWaterbody(state.waterbody_id)
+
     const { 
         data: waterbodyResults, 
         fetchNextPage, 
         isFetchingNextPage,
         totalResults 
     } = useGetWaterbodies({
-        coords: state.coords, within,
+        coords: state.coords, within: state.within,
         shouldQuery: state.shouldQueryLocation
     })
-    const { results, isError, isLoading } = useAutoComplete({ 
+
+    const { 
+        results, 
+        isError, 
+        isLoading 
+    } = useAutoComplete({ 
         input: state.input, coords: state.coords, 
         queryType: state.autocompleteType,
         shouldQuery: state.shouldQueryAutocomplete
     })
 
-    const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+    const handleScroll = () => {
         const container = resultsContainer.current
-        if(
-            container && 
+        if( container && 
             !isFetchingNextPage && 
             (container.scrollTop / container.scrollHeight) > .75
-        ){
-            fetchNextPage()
-        }
+        ) fetchNextPage() 
     }
 
+    const [inputBoxPosition, setInputBoxPosition] = useState<number | string>(0)
+
     useEffect(() => {
-        console.log(waterbodyResults)
-    },[waterbodyResults])
+        if(state.selectedGeoplace || state.queryingNearMe){
+            setInputBoxPosition('-100vw')
+        }else{
+            const delay = setTimeout(() => setInputBoxPosition(0), 200)
+            return () => clearTimeout(delay)
+        }
+    },[state.selectedGeoplace, state.queryingNearMe])
 
 
     useEffect(() => { if(state.waterbody_id) fetchWaterbody() }, [state.waterbody_id])
@@ -65,9 +78,16 @@ const TestPage = (): JSX.Element => {
     return (
         <Page className={classes.container}>
             <div className={`${classes.searchBox} ${state.showMap && classes.hideSearchBox}`}>
+
+                <SearchNearLocationCard
+                    selectedGeoplace={state.selectedGeoplace} 
+                    numberOfResults={totalResults || 0}
+                    onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
+                />
+                
                 <motion.div transition={{ duration: .8, type: 'spring'}}
                     className={classes.searchBoxInputFields} 
-                    animate={{ x: state.shouldQueryLocation ? '-100vw' : '0vw' }}
+                    animate={{ x: inputBoxPosition }}
                 >
                     <Text color='#fefefe' size='lg'>Search By Place or Waterbody</Text>
                     <TextInput className={classes.searchBar} value={state.input}
@@ -119,14 +139,16 @@ const TestPage = (): JSX.Element => {
                     </Text>
                 </motion.div>
                 
-                <SearchNearMeButton coords={state.coords}
+                <SearchNearMeButton coords={state.coords} hide={Boolean(state.selectedGeoplace)}
                     isActive={state.queryingNearMe} numberOfResults={totalResults || 0}
                     onSelect={coords => dispatch({ type: 'SELECT_NEAR_ME', coords })} 
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
                 />
             </div>
 
-            <div className={`${classes.resultsContainer} ${state.showMap && classes.shiftResultsContainer}`} ref={resultsContainer} onScroll={handleScroll}>
+            <div className={
+            `${classes.resultsContainer} ${state.showMap && classes.shiftResultsContainer}`
+            } ref={resultsContainer} onScroll={handleScroll}>
                 { state.shouldQueryAutocomplete && 
                     results.map(res => (
                         res.type === 'WATERBODY' ? (

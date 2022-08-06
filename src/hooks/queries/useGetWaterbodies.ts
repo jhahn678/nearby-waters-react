@@ -34,16 +34,6 @@ const getWaterbodies = async (
     return result.data;
 }
 
-// export const useGetWaterbodies = (params: WaterbodyQuery) => {
-
-//     const result = useQuery<WaterbodyResult, Error>({
-//         queryKey: 'waterbodies-query',
-//         queryFn: () => getWaterbodies(params),
-//         enabled: params.shouldQuery
-//     })
-//     return result;
-// }
-
 export const useGetWaterbodies = (params: WaterbodyQuery) => {
     
     const result = useInfiniteQuery<WaterbodyResult, Error>({
