@@ -1,9 +1,9 @@
-import { latlng } from "../../types/Autocomplete"
+import create from 'zustand'
+import { latlng } from '../../types/Autocomplete'
 import Geoplace from '../../types/Geoplace'
-import { WaterbodyClassifications } from "../../types/Waterbody"
 import { coordsAreNull, coordsAreValid } from '../../utils/validateCoords'
 
-type State = {
+type DemoPageState = {
     autocompleteType: 'ALL' | 'GEOPLACES' | 'WATERBODIES',
     input: string,
     coords: latlng,
@@ -18,11 +18,10 @@ type State = {
     queryingNearMe: boolean
     shouldQueryLocation: boolean
     shouldQueryAutocomplete: boolean,
-    previousCoords: latlng,
-    classifications: string[]
+    previousCoords: latlng
 }
 
-export type Action = 
+type Action = 
 | { type: 'INPUT_VALUE', value: string }
 | { type: 'INPUT_LATITUDE', value: string }
 | { type: 'INPUT_LONGITUDE', value: string }
@@ -34,31 +33,10 @@ export type Action =
 | { type: 'SELECT_LOCATION', geoplace: Geoplace }
 | { type: 'CLEAR_LOCATION' }
 | { type: 'SELECT_NEAR_ME', coords: latlng }
-| { type: 'SET_CLASSIFICATIONS', values: string[]}
-| { type: 'SET_WITHIN', value: number | string | null }
 
 
-export const initialState: State = {
-    input: '',
-    coords: { latitude: '', longitude: '' },
-    previousCoords:{ latitude: '', longitude: '' },
-    coordsAreValid: false,
-    coordsAreNull: true,
-    within: 50,
-    shouldQueryLocation: false,
-    shouldQueryAutocomplete: false,
-    autocompleteType: 'ALL',
-    locationError: false,
-    fieldsTouched: false,
-    showMap: false,
-    waterbody_id: null,
-    selectedGeoplace: null,
-    queryingNearMe: false,
-    classifications: []
-}
 
-
-export const reducer = (state: State, action: Action): State => {
+const reducer = (state: DemoPageState, action: Action): DemoPageState => {
     if(action.type === 'INPUT_VALUE'){
         const { coordsAreNull, coordsAreValid, shouldQueryLocation } = state;
         const shouldQueryAutocomplete = !shouldQueryLocation && (
@@ -188,30 +166,27 @@ export const reducer = (state: State, action: Action): State => {
             queryingNearMe: true
         }
     }
-    else if(action.type === 'SET_WITHIN'){
-        const within = action.value;
-        switch(typeof within){
-            case 'number':
-                return {
-                    ...state,
-                    within
-                }
-            case 'string': 
-                return {
-                    ...state,
-                    within: parseInt(within)
-                }
-            default:
-                return state;
-        }
-    }
-    else if(action.type === 'SET_CLASSIFICATIONS'){
-        return {
-            ...state,
-            classifications: action.values
-        }
-    }
     else{
         return state;
     }    
 }
+
+
+export const useDemoStore = create<DemoPageState>((set) => ({
+    input: '',
+    coords: { latitude: '', longitude: '' },
+    previousCoords:{ latitude: '', longitude: '' },
+    coordsAreValid: false,
+    coordsAreNull: true,
+    within: 50,
+    shouldQueryLocation: false,
+    shouldQueryAutocomplete: false,
+    autocompleteType: 'ALL',
+    locationError: false,
+    fieldsTouched: false,
+    showMap: false,
+    waterbody_id: null,
+    selectedGeoplace: null,
+    queryingNearMe: false,
+    dispatch: (action: Action) => set(state => reducer(state, action))
+}))

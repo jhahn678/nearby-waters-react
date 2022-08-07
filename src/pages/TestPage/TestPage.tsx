@@ -20,7 +20,6 @@ import SearchNearMeButton from '../../components/search/SearchNearMeButton/Searc
 import { motion } from 'framer-motion'
 import SearchNearLocationCard from '../../components/search/SearchNearLocationCard/SearchNearLocationCard'
 
-
 const TestPage = (): JSX.Element => {
 
     const [state, dispatch] = useReducer(reducer, initialState)
@@ -38,6 +37,7 @@ const TestPage = (): JSX.Element => {
     } = useGetWaterbodies({
         coords: state.coords, 
         within: state.within,
+        classifications: state.classifications,
         shouldQuery: state.shouldQueryLocation
     })
 
@@ -84,10 +84,11 @@ const TestPage = (): JSX.Element => {
                 }}
             >
 
-                <SearchNearLocationCard
-                    selectedGeoplace={state.selectedGeoplace} 
+                <SearchNearLocationCard selectedGeoplace={state.selectedGeoplace} 
                     numberOfResults={totalResults || 0}
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
+                    onChangeRadius={value => dispatch({ type: 'SET_WITHIN', value})}
+                    onChangeClassification={values => dispatch({ type: 'SET_CLASSIFICATIONS', values })}
                 />
                 
                 <motion.div
@@ -122,6 +123,7 @@ const TestPage = (): JSX.Element => {
                         onChange={(value: AutocompleteQueryType) => dispatch({ type: 'SELECT_QUERYTYPE', value })}
                     />
 
+
                     <Text color='#fefefe' size='md' style={{ marginTop: '1.5em'}}>
                         Add Query Location
                     </Text>
@@ -143,6 +145,7 @@ const TestPage = (): JSX.Element => {
                         className={classes.currentLocationButton}
                     />
 
+
                     <Text color='#fefefe' size='sm' style={{ marginTop: '1em', marginBottom: '2em'}}>
                         The above is a demonstration of the in-app autocomplete search bar.
                         Set your coordinates to simulate location-based autocomplete results 
@@ -154,9 +157,13 @@ const TestPage = (): JSX.Element => {
                     isActive={state.queryingNearMe} numberOfResults={totalResults || 0}
                     onSelect={coords => dispatch({ type: 'SELECT_NEAR_ME', coords })} 
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
+                    onChangeRadius={value => dispatch({ type: 'SET_WITHIN', value })} 
+                    onChangeClassifications={values => dispatch({ type: 'SET_CLASSIFICATIONS', values })}
                 />
 
             </motion.div>
+
+
 
             <motion.div 
                 className={classes.resultsContainer} 

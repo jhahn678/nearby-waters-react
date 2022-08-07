@@ -1,27 +1,49 @@
 import React, { MouseEventHandler, useState, useEffect, useRef } from 'react'
 import classes from './SearchNearMeButton.module.css'
+import { Title, Loader, Text, Select } from '@mantine/core'
 import { BsCursor, BsSearch, BsX } from 'react-icons/bs'
-import { Title, Loader, Text } from '@mantine/core'
 import { latlng } from '../../../types/Autocomplete'
 import useCurrentLocation from '../../../hooks/utils/useCurrentLocation'
 import { motion } from 'framer-motion'
+import WaterbodyClassificationSelect from '../../search/WaterbodyClassificationSelect/WaterbodyClassificationSelect'
 
+
+const radiusValues = [
+    { value: '10', label: '10 miles' },
+    { value: '25', label: '25 miles' },
+    { value: '50', label: '50 miles' },
+    { value: '100', label: '100 miles' }
+]
 
 type Props = {
     /** callback to set coordinates in state */
     onSelect: (coords: latlng) => void,
     /** callback to be called on dismiss */
     onClose: () => void
+    /** callback to set search radius on change */
+    onChangeRadius: (radius: string | null) => void,
+    /** callback to set classifications on change */
+    onChangeClassifications: (values: string[]) => void
     /** Currently showing results near me  */
     isActive: boolean,
     /** When a location is selected and card should hide */
     hide: boolean,
+    /**  Total number of waterbodies matching queries */
     numberOfResults: number | undefined,
+    /** Coord */
     coords: latlng
 }
 
-const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberOfResults }: Props): JSX.Element => {
-
+const SearchNearMeButton = ({ 
+    onSelect, 
+    onClose,
+    onChangeRadius,
+    onChangeClassifications, 
+    isActive, 
+    hide, 
+    coords, 
+    numberOfResults,
+}: Props): JSX.Element => {
 
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -43,8 +65,8 @@ const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberO
         if(container && isActive) {
             const offset = (container.offsetTop - 48) * -1
             const delayPosition = setTimeout(() => setContainerPosition(offset), 100)
-            const delayHeight = setTimeout(() => setContainerHeight(200), 400)
-            const delayDetails = setTimeout(() => setShowDetails(true), 500)
+            const delayHeight = setTimeout(() => setContainerHeight(300), 400)
+            const delayDetails = setTimeout(() => setShowDetails(true), 600)
             return () => { clearTimeout(delayPosition); clearTimeout(delayHeight); clearTimeout(delayDetails) }
         }
         else if(hide) {
@@ -53,8 +75,8 @@ const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberO
         }
         else{
             const delayHeight = setTimeout(() => {
-                setContainerHeight(72)
                 setShowDetails(false)
+                setContainerHeight(72)
             }, 100)
             const delayPosition = setTimeout(() => setContainerPosition(0), 300)
             return () => { clearTimeout(delayHeight); clearTimeout(delayPosition)}
@@ -91,14 +113,35 @@ const SearchNearMeButton = ({ onSelect, onClose, isActive, hide, coords, numberO
                 }
             </div>
             { showDetails && 
-                <div className={classes.details}>
-                    <Title order={5} style={{ display: 'flex', alignItems: 'center'}}>
-                        Showing {numberOfResults || <Loader size='xs' style={{ paddingLeft: 3, paddingRight: 3 }}/>} results near:
-                    </Title>
-                    <Text size='md'>Latitude: {coords.latitude}</Text>
-                    <Text size='md'>Longitude: {coords.longitude}</Text>
-                </div>
-            }
+                    <>
+                        <motion.div 
+                            className={classes.details} 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1, transition: { duration: .1 }}}>
+                            <Title order={5}>Showing {numberOfResults} results</Title>
+                        </motion.div> 
+                        <div className={classes.grid}> 
+                            <Text size='md'>Latitude: </Text>
+                            <Text style={{ justifySelf: 'flex-end'}}>{coords.latitude}</Text>
+                            <Text size='md'>Longitude: </Text>
+                            <Text style={{ justifySelf: 'flex-end'}}>{coords.longitude}</Text>
+                            <Text size='md'>Radius: </Text>
+                            <Select
+                                data={radiusValues} 
+                                style={{ width: 125, justifySelf: 'flex-end' }}
+                                styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
+                                size='xs'
+                                placeholder='Radius in miles'
+                                onChange={x => onChangeRadius(x)}
+                            />
+                            <Text size='md'>Filter: </Text>
+                            <WaterbodyClassificationSelect 
+                                MultiSelectProps={{ style: { justifySelf: 'flex-end' }}}
+                                setClassifications={values => onChangeClassifications(values)}
+                            />
+                        </div> 
+                    </>
+                } 
         </motion.div>
     )
 }

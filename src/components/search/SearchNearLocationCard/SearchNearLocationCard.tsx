@@ -3,19 +3,32 @@ import React, { useEffect, useState } from 'react'
 import Geoplace from '../../../types/Geoplace'
 import { motion } from 'framer-motion'
 import { BsTree, BsFlag, BsX } from 'react-icons/bs'
-import { Title, Text } from '@mantine/core'
+import { Title, Text, Select } from '@mantine/core'
+import WaterbodyClassificationSelect from '../WaterbodyClassificationSelect/WaterbodyClassificationSelect'
+
+const radiusValues = [
+    { value: '10', label: '10 miles' },
+    { value: '25', label: '25 miles' },
+    { value: '50', label: '50 miles' },
+    { value: '100', label: '100 miles' }
+]
 
 interface Props {
     selectedGeoplace: Geoplace | null
     numberOfResults: number
-    onClose: () => void
+    onClose: () => void,
+    onChangeRadius: (value: string | null) => void,
+    onChangeClassification: (values: string[]) => void
 }
 
 
-
-const SearchNearLocationCard = (
-    { selectedGeoplace, numberOfResults, onClose }: Props
-): JSX.Element => {
+const SearchNearLocationCard = ({ 
+    onClose,
+    onChangeRadius,
+    onChangeClassification,
+    selectedGeoplace, 
+    numberOfResults, 
+}: Props): JSX.Element => {
 
     const handleBackgroundColor = () => (
         selectedGeoplace && selectedGeoplace.fcode === 'PRK' ?
@@ -27,13 +40,13 @@ const SearchNearLocationCard = (
     const [containerPosition, setContainerPosition] = useState<number | string>('100vw')
 
     useEffect(() => {
-        if(selectedGeoplace && containerHeight === 90){
+        if(selectedGeoplace){
             setContainerPosition(0)
-            const delayHeight = setTimeout(() => setContainerHeight(200), 350)
-            const delayDetails = setTimeout(() => setShowDetails(true), 450)
+            const delayHeight = setTimeout(() => setContainerHeight(300), 400)
+            const delayDetails = setTimeout(() => setShowDetails(true), 600)
             return () => { clearTimeout(delayHeight); clearTimeout(delayDetails) }
         }
-        if(!selectedGeoplace && containerHeight === 200){
+        if(!selectedGeoplace){
             setShowDetails(false)
             setContainerHeight(90)
             const delayPosition = setTimeout(() => setContainerPosition('100vw'), 200)
@@ -77,9 +90,27 @@ const SearchNearLocationCard = (
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1, transition: { duration: .1 }}}>
                             <Title order={5}>Showing {numberOfResults} results</Title>
-                        </motion.div>  
-                        <Text size='md'>Latitude: {selectedGeoplace.geometry.coordinates[1]}</Text>
-                        <Text size='md'>Longitude: {selectedGeoplace.geometry.coordinates[0]}</Text>
+                        </motion.div> 
+                        <div className={classes.grid}> 
+                            <Text size='md'>Latitude: </Text>
+                            <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geometry.coordinates[1]}</Text>
+                            <Text size='md'>Longitude: </Text>
+                            <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geometry.coordinates[0]}</Text>
+                            <Text size='md'>Radius: </Text>
+                            <Select
+                                data={radiusValues} 
+                                style={{ width: 125, justifySelf: 'flex-end' }}
+                                styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
+                                size='xs'
+                                placeholder='Radius in miles'
+                                onChange={x => onChangeRadius(x)}
+                            />
+                            <Text size='md'>Filter: </Text>
+                            <WaterbodyClassificationSelect 
+                                MultiSelectProps={{ style: { justifySelf: 'flex-end' }}}
+                                setClassifications={values => onChangeClassification(values)}
+                            />
+                        </div> 
                     </>
                 } 
             </>

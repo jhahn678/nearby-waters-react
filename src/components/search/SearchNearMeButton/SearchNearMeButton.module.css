@@ -18,7 +18,7 @@
 }
 
 .details{
-    margin-top: 1.5em;
+    margin-top: 2em;
 }
 
 .view{
@@ -35,4 +35,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.grid{
+    margin-top: 1em;
+    margin-bottom: .5em;
+    padding-right: .5em;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    width: 100%;
+    row-gap: 4px;
 }
