@@ -20,6 +20,7 @@ interface WaterbodyQuery {
     * @default 50
     */
     within: number,
+    sort?: 'rank' | 'distance',
     /** Array of classifications to filter by */
     classifications: string[],
     /** Controls query enabled */
@@ -29,7 +30,7 @@ interface WaterbodyQuery {
 }
 
 const getWaterbodies = async (
-    { coords, within, classifications, limit=50 }: WaterbodyQuery,
+    { coords, within, classifications, limit=50, sort }: WaterbodyQuery,
     pageParam: number = 1
 ): Promise<WaterbodyResult> => {
 
@@ -37,6 +38,7 @@ const getWaterbodies = async (
     if(coords.longitude && coords.latitude) url += `lnglat=${coords.longitude},${coords.latitude}&`
     if(within) url += `within=${within}&`
     if(classifications.length > 0) url += `classifications=${classifications.join(',')}&`
+    if(sort) url+= `sort=${sort}&`
     const result = await axios.get(url)
     return result.data;
 }
@@ -57,7 +59,7 @@ export const useGetWaterbodies = (params: WaterbodyQuery) => {
 
     useEffect(() => {
         result.refetch()
-    }, [params.classifications, params.within])
+    }, [params.classifications, params.within, params.sort])
 
     return {
         totalResults: result.data?.pages[0].metadata.total,

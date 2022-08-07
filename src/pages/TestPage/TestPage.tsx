@@ -37,6 +37,7 @@ const TestPage = (): JSX.Element => {
     } = useGetWaterbodies({
         coords: state.coords, 
         within: state.within,
+        sort: state.sort,
         classifications: state.classifications,
         shouldQuery: state.shouldQueryLocation
     })
@@ -159,6 +160,7 @@ const TestPage = (): JSX.Element => {
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
                     onChangeRadius={value => dispatch({ type: 'SET_WITHIN', value })} 
                     onChangeClassifications={values => dispatch({ type: 'SET_CLASSIFICATIONS', values })}
+                    onChangeSort={value => dispatch({ type: 'SET_SORT', value })}
                 />
 
             </motion.div>

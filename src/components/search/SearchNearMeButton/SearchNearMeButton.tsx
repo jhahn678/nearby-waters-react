@@ -29,6 +29,8 @@ type Props = {
     onChangeRadius: (radius: string | null) => void,
     /** callback to set classifications on change */
     onChangeClassifications: (values: string[]) => void
+    /** callback to set sort method on change */
+    onChangeSort: (value: string |  null) => void,
     /** Currently showing results near me  */
     isActive: boolean,
     /** When a location is selected and card should hide */
@@ -44,6 +46,7 @@ const SearchNearMeButton = ({
     onClose,
     onChangeRadius,
     onChangeClassifications, 
+    onChangeSort,
     isActive, 
     hide, 
     coords, 
@@ -133,22 +136,22 @@ const SearchNearMeButton = ({
                             <Text size='md'>Radius: </Text>
                             <Select
                                 size='xs' data={radiusValues} 
-                                style={{ width: 125, justifySelf: 'flex-end' }}
+                                style={{ width: 165, justifySelf: 'flex-end' }}
                                 styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
                                 placeholder='Radius in miles' defaultValue='50'
                                 onChange={x => onChangeRadius(x)}
+                            />
+                            <Text size='md'>Sort By: </Text>
+                            <Select
+                                data={sortValues} size='xs' defaultValue='rank'
+                                style={{ width: 165, justifySelf: 'flex-end' }}
+                                styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
+                                onChange={x => onChangeSort(x)}
                             />
                             <Text size='md'>Filter: </Text>
                             <WaterbodyClassificationSelect 
                                 MultiSelectProps={{ style: { justifySelf: 'flex-end' }}}
                                 setClassifications={values => onChangeClassifications(values)}
-                            />
-                            <Text size='md'>Sort By: </Text>
-                            <Select
-                                data={sortValues} size='xs' defaultValue='rank'
-                                style={{ width: 125, justifySelf: 'flex-end' }}
-                                styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
-                                onChange={x => onChangeRadius(x)}
                             />
                         </div> 
                     </>

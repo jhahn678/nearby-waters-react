@@ -19,7 +19,8 @@ type State = {
     shouldQueryLocation: boolean
     shouldQueryAutocomplete: boolean,
     previousCoords: latlng,
-    classifications: string[]
+    classifications: string[],
+    sort: 'rank' | 'distance'
 }
 
 export type Action = 
@@ -36,6 +37,7 @@ export type Action =
 | { type: 'SELECT_NEAR_ME', coords: latlng }
 | { type: 'SET_CLASSIFICATIONS', values: string[]}
 | { type: 'SET_WITHIN', value: number | string | null }
+| { type: 'SET_SORT', value: string | null }
 
 
 export const initialState: State = {
@@ -54,7 +56,8 @@ export const initialState: State = {
     waterbody_id: null,
     selectedGeoplace: null,
     queryingNearMe: false,
-    classifications: []
+    classifications: [],
+    sort: 'rank'
 }
 
 
@@ -145,7 +148,7 @@ export const reducer = (state: State, action: Action): State => {
         return {
             ...state,
             showMap: false,
-            waterbody_id: null
+            waterbody_id: null,
         }
     }
     else if(action.type === 'SELECT_LOCATION'){
@@ -173,7 +176,10 @@ export const reducer = (state: State, action: Action): State => {
             coordsAreNull: true,
             coordsAreValid: false,
             queryingNearMe: false,
-            coords: state.previousCoords
+            coords: state.previousCoords,
+            sort: 'rank',
+            classifications: [],
+            within: 50
         }
     }
     else if(action.type === 'SELECT_NEAR_ME'){
@@ -209,6 +215,16 @@ export const reducer = (state: State, action: Action): State => {
         return {
             ...state,
             classifications: action.values
+        }
+    }
+    else if(action.type === 'SET_SORT'){
+        switch(action.value){
+            case 'distance':
+                return { ...state, sort: 'distance' }
+            case 'rank':
+                return { ...state, sort: 'rank' }
+            default:
+                return state;
         }
     }
     else{
