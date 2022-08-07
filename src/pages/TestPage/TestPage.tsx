@@ -90,6 +90,7 @@ const TestPage = (): JSX.Element => {
                     onClose={() => dispatch({ type: 'CLEAR_LOCATION' })}
                     onChangeRadius={value => dispatch({ type: 'SET_WITHIN', value})}
                     onChangeClassification={values => dispatch({ type: 'SET_CLASSIFICATIONS', values })}
+                    onChangeSort={value => dispatch({ type: 'SET_SORT', value})}
                 />
                 
                 <motion.div

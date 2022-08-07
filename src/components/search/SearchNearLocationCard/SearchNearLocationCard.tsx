@@ -13,12 +13,18 @@ const radiusValues = [
     { value: '100', label: '100 miles' }
 ]
 
+const sortValues = [
+    { value: 'rank', label: 'Best Match' },
+    { value: 'distance', label: 'Distance' }
+]
+
 interface Props {
     selectedGeoplace: Geoplace | null
     numberOfResults: number
     onClose: () => void,
     onChangeRadius: (value: string | null) => void,
-    onChangeClassification: (values: string[]) => void
+    onChangeClassification: (values: string[]) => void,
+    onChangeSort: (value: string |  null) => void,
 }
 
 
@@ -26,6 +32,7 @@ const SearchNearLocationCard = ({
     onClose,
     onChangeRadius,
     onChangeClassification,
+    onChangeSort,
     selectedGeoplace, 
     numberOfResults, 
 }: Props): JSX.Element => {
@@ -42,7 +49,7 @@ const SearchNearLocationCard = ({
     useEffect(() => {
         if(selectedGeoplace){
             setContainerPosition(0)
-            const delayHeight = setTimeout(() => setContainerHeight(300), 400)
+            const delayHeight = setTimeout(() => setContainerHeight(336), 400)
             const delayDetails = setTimeout(() => setShowDetails(true), 600)
             return () => { clearTimeout(delayHeight); clearTimeout(delayDetails) }
         }
@@ -98,12 +105,18 @@ const SearchNearLocationCard = ({
                             <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geometry.coordinates[0]}</Text>
                             <Text size='md'>Radius: </Text>
                             <Select
-                                data={radiusValues} 
-                                style={{ width: 125, justifySelf: 'flex-end' }}
+                                data={radiusValues} size='xs'
+                                style={{ width: 165, justifySelf: 'flex-end' }}
                                 styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
-                                size='xs'
-                                placeholder='Radius in miles'
+                                placeholder='Radius in miles' defaultValue='50'
                                 onChange={x => onChangeRadius(x)}
+                            />
+                            <Text size='md'>Sort By: </Text>
+                            <Select
+                                data={sortValues} size='xs' defaultValue='rank'
+                                style={{ width: 165, justifySelf: 'flex-end' }}
+                                styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
+                                onChange={x => onChangeSort(x)}
                             />
                             <Text size='md'>Filter: </Text>
                             <WaterbodyClassificationSelect 
