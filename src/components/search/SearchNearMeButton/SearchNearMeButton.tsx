@@ -15,6 +15,11 @@ const radiusValues = [
     { value: '100', label: '100 miles' }
 ]
 
+const sortValues = [
+    { value: 'rank', label: 'Best Match' },
+    { value: 'distance', label: 'Distance' }
+]
+
 type Props = {
     /** callback to set coordinates in state */
     onSelect: (coords: latlng) => void,
@@ -65,7 +70,7 @@ const SearchNearMeButton = ({
         if(container && isActive) {
             const offset = (container.offsetTop - 48) * -1
             const delayPosition = setTimeout(() => setContainerPosition(offset), 100)
-            const delayHeight = setTimeout(() => setContainerHeight(300), 400)
+            const delayHeight = setTimeout(() => setContainerHeight(320), 400)
             const delayDetails = setTimeout(() => setShowDetails(true), 600)
             return () => { clearTimeout(delayPosition); clearTimeout(delayHeight); clearTimeout(delayDetails) }
         }
@@ -94,7 +99,7 @@ const SearchNearMeButton = ({
                     type: 'spring'
                 } 
             }}
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: isActive ? 1 : 1.02 }}
             onClick={handleClick}
         >
             <div className={classes.heading}>
@@ -127,17 +132,23 @@ const SearchNearMeButton = ({
                             <Text style={{ justifySelf: 'flex-end'}}>{coords.longitude}</Text>
                             <Text size='md'>Radius: </Text>
                             <Select
-                                data={radiusValues} 
+                                size='xs' data={radiusValues} 
                                 style={{ width: 125, justifySelf: 'flex-end' }}
                                 styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
-                                size='xs'
-                                placeholder='Radius in miles'
+                                placeholder='Radius in miles' defaultValue='50'
                                 onChange={x => onChangeRadius(x)}
                             />
                             <Text size='md'>Filter: </Text>
                             <WaterbodyClassificationSelect 
                                 MultiSelectProps={{ style: { justifySelf: 'flex-end' }}}
                                 setClassifications={values => onChangeClassifications(values)}
+                            />
+                            <Text size='md'>Sort By: </Text>
+                            <Select
+                                data={sortValues} size='xs' defaultValue='rank'
+                                style={{ width: 125, justifySelf: 'flex-end' }}
+                                styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
+                                onChange={x => onChangeRadius(x)}
                             />
                         </div> 
                     </>
