@@ -1,19 +1,19 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from './pages/HomePage'
-import AboutPage from './pages/AboutPage'
-import APIPage from './pages/APIpage'
-import TestPage from './pages/TestPage/TestPage'
+import DemoPage from './pages/DemoPage/DemoPage'
+import AuthPage from './pages/AuthPage/AuthPage'
+import EditPage from "./pages/EditPage/EditPage";
 
 
 const AppRoutes = (): JSX.Element => {
   return (
     <BrowserRouter>
         <Routes>
-            <Route index element={<HomePage/>}/>
-            <Route path='/about' element={<AboutPage/>}/>
-            <Route path='/api' element={<APIPage/>}/>
-            <Route path='/test' element={<TestPage/>}/>
+            <Route index element={<DemoPage/>}/>
+            <Route path='/demo' element={<DemoPage/>}/>
+            {/* <Route path='/about' element={<AboutPage/>}/> */}
+            <Route path='/login' element={<AuthPage/>}/>
+            <Route path='/edit' element={<EditPage/>}/>
         </Routes>
     </BrowserRouter>
   )
