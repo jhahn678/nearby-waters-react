@@ -1,7 +1,12 @@
 import React from 'react'
-import Header from './Header/Header.tsx'
+import Header from '../shared/Header/Header'
 
-const Page = ({ children, className}) => {
+interface Props {
+  className: string,
+  children: React.ReactNode
+}
+
+const Page = ({ className, children }: Props) => {
   return (
       <div className='page'>
           <Header/>
