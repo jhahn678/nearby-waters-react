@@ -6,7 +6,6 @@ interface Args {
 }
 
 const deleteWaterbody = ({ _id }: Args) => {
-    console.log('Sending delete request')
     return axios.delete('/waterbody', {
         data: { _id }
     })
