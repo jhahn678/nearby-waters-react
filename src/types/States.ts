@@ -14,3 +14,12 @@ export type StateName =
     'Rhode Island'| 'Vermont'| 'Wisconsin'| 'California'| 'Colorado'| 'New Mexico'| 'Nevada'| 'Utah'| 
     'Arizona'| 'Idaho'| 'Montana'| 'North Dakota'| 'Oregon'| 'South Dakota'| 'Washington'| 'Wyoming'| 
     'Hawaii'| 'Alaska'| 'Kentucky'| 'Massachusetts'| 'Pennsylvania'| 'Virginia'
+
+
+export const states: StateAbbreviation[] = [
+    'AK', 'AL', 'TX', 'SC', 'VA', 'WV', 'MS', 'KS', 'AR', 'FL', 'DC',
+    'DE', 'GA', 'IL', 'IN', 'MD', 'KY', 'LA', 'MO', 'OH', 'NC', 'NJ',
+    'PA', 'OK', 'TN', 'IA', 'CT', 'WI', 'MA', 'ME', 'MI', 'MN', 'NE',
+    'ND', 'NY', 'NH', 'RI', 'SD', 'VT', 'CA', 'AZ', 'CO', 'NM', 'NV',
+    'UT', 'ID', 'MT', 'OR', 'WA', 'WY', 'HI'
+]
