@@ -4,16 +4,16 @@ import { PopulatedWaterbody } from '../../types/Waterbody'
 
 
 interface GetWaterbodiesQuery {
-    name: string,
-    state?: string,
-    weight?: number,
+    name: string | null,
+    state: string | null,
+    weight: number | null,
     shouldQuery: boolean
 }
 
 
 const getWaterbodiesByName = async ({
     name, weight, state
-}: Omit<GetWaterbodiesQuery, 'shouldQuery'>): Promise<PopulatedWaterbody[]> => {
+}: GetWaterbodiesQuery): Promise<PopulatedWaterbody[]> => {
     let url = `/waterbodies/duplicate-name?name=${name}`
     if(weight) url += `&weight=${weight}`
     if(state) url += `&state=${state}`
@@ -22,13 +22,12 @@ const getWaterbodiesByName = async ({
 }
 
 
-export const useGetWaterbodiesByName = ({ 
-    shouldQuery, ...args
-}: GetWaterbodiesQuery) => {
+export const useGetWaterbodiesByName = (args: GetWaterbodiesQuery) => {
+
     const result = useQuery({
         queryKey: `${args.name}-waterbodies`,
         queryFn: () => getWaterbodiesByName(args),
-        enabled: shouldQuery
+        enabled: args.shouldQuery
     })
     return result;
 }
