@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AppRoutes from './AppRoutes'
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MantineProvider } from '@mantine/core';
 import { MapProvider } from 'react-map-gl';
 import ErrorModal from './components/modals/ErrorModal/ErrorModal';
 import ModalContextProvider from './hooks/contexts/modal/ModalContextProvider';
+import { useAuth } from './hooks/zustand/useAuth';
 
 const queryClient = new QueryClient({ 
   defaultOptions: { 
@@ -17,6 +18,17 @@ const queryClient = new QueryClient({
 })
 
 const App = (): JSX.Element => {
+
+    const { autoSignIn } = useAuth()
+
+    useEffect(() => {
+      const token = localStorage.getItem('AUTH_TOKEN')
+      const username = localStorage.getItem('USERNAME')
+      if(token && username){
+        autoSignIn({ token, username })
+      }
+    },[])
+
     return (
       <QueryClientProvider client={queryClient}>
         <MantineProvider withGlobalStyles withNormalizeCSS
