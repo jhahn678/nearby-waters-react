@@ -1,18 +1,26 @@
-import { FeatureCollection } from 'geojson'
-import React, { useEffect, useRef } from 'react'
+import { BBox, FeatureCollection } from 'geojson'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@mantine/core'
 import { BsArrowLeft } from 'react-icons/bs'
 import MapGL, { Source, Layer, MapRef } from 'react-map-gl'
 import bbox from '@turf/bbox'
+import { PopulatedWaterbody } from '../../types/Waterbody'
+import { waterbodiesToBBox, waterbodyToFeatureCollection } from '../../utils/geojsonConversions'
+import { colors, genColor } from './colors'
+import { LngLatBoundsLike } from 'react-map-gl'
 
 
 type Props = { 
-    data: FeatureCollection | undefined,
+    data?: FeatureCollection | undefined,
+    waterbodies?: PopulatedWaterbody[] | undefined
     showDismiss?: boolean,
-    dismissMap?: () => void
+    dismissMap?: () => void,
+    bounds?: LngLatBoundsLike | null
 }
 
-const Map = ({ data, showDismiss=false, dismissMap }: Props) => {
+const Map = ({ data, waterbodies, showDismiss=false, dismissMap, bounds }: Props) => {
+
+    const [boundingBox, setBoundingBox] = useState<LngLatBoundsLike | []>([])
 
     const handleDismiss = () => dismissMap && dismissMap()
 
@@ -21,12 +29,21 @@ const Map = ({ data, showDismiss=false, dismissMap }: Props) => {
     useEffect(() => {
         if(mapRef.current && data){
             const [minLng, minLat, maxLng, maxLat] = bbox(data);
+            setBoundingBox([ [minLng, minLat], [maxLng, maxLat] ])
             mapRef.current.fitBounds(
                 [ [minLng, minLat], [maxLng, maxLat] ],
-                {padding: 40, duration: 1000}
+                { padding: 40, duration: 1000 }
             )
         }
-    },[data])
+        if(mapRef.current && waterbodies){
+            const bounds = waterbodiesToBBox(waterbodies)
+            setBoundingBox(bounds)
+            mapRef.current.fitBounds(bounds, { padding: 40, duration: 2000 })
+        }
+        if(mapRef.current && bounds){
+            mapRef.current.fitBounds(bounds, { padding: 40, duration: 2000 })
+        }
+    },[data, waterbodies, bounds])
 
     return (
         <MapGL
@@ -38,8 +55,13 @@ const Map = ({ data, showDismiss=false, dismissMap }: Props) => {
         >
             { data &&
                 <Source id="waterbody" type="geojson" data={data}>
-                    <Layer type='fill' id='waterbody-polygon' paint={{ "fill-color": '#fc03cf' }} filter={['==', '$type', 'Polygon']}/>
-                    <Layer type='line' id='waterbody-line' paint={{ 'line-color': '#fc03cf', "line-width": 1.5 }}/>
+                    <Layer type='fill' id='waterbody-polygon' 
+                        paint={{ "fill-color": '#fc03cf' }} 
+                        filter={['==', '$type', 'Polygon']}
+                    />
+                    <Layer type='line' id='waterbody-line' 
+                        paint={{ 'line-color': '#fc03cf', "line-width": 2 }}
+                    />
                 </Source>
             }
             { showDismiss &&
@@ -49,6 +71,17 @@ const Map = ({ data, showDismiss=false, dismissMap }: Props) => {
                     onClick={handleDismiss}><BsArrowLeft size={32} color='black'/>
                 </Button>
             }
+            { waterbodies && waterbodies.map((x, index) => (
+                <Source key={x._id} id={x._id} type="geojson" data={waterbodyToFeatureCollection(x)}>
+                    <Layer type='fill' id={`${x._id}-polygon`} 
+                        paint={{ "fill-color": genColor(index) }} 
+                        filter={['==', '$type', 'Polygon']}
+                    />
+                    <Layer type='line' id={`${x._id}-line`} 
+                        paint={{ 'line-color': genColor(index), "line-width": 3 }}
+                    />
+                </Source>
+            ))}
         </MapGL>
     )
 }
