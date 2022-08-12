@@ -16,13 +16,13 @@ interface Props {
     parentSelected: boolean
     childrenSelected: boolean
     dispatch: Dispatch<Action>
-    /** Callback to be executed upon successful mutation */
-    onMutation: () => void
+    onMerge: () => void
 }
 
 const EditSearchResult = ({
     data, color, isSelectedWaterbody, isSelectedParent, 
-    isSelectedChild, parentSelected, childrenSelected, dispatch
+    isSelectedChild, parentSelected, childrenSelected, 
+    dispatch, onMerge
 }: Props): JSX.Element => {
 
     const { dispatch: modalDispatch } = useModalContext()
@@ -63,8 +63,8 @@ const EditSearchResult = ({
         >
             <div className={classes.color} style={{ backgroundColor: color }}/>
             <div className={classes.details}>
-                <Text>{data.name}</Text>
-                <Text>{data.geometries.length} geometries</Text>
+                <Text>{data.name} &bull; {data.states.length <= 3 ? data.states.join(', ') : `${data.states.length} states`}</Text>
+                <Text>{data.geometries.length} geometries &bull; {data.counties.length} counties</Text>
             </div>
             <div className={classes.actions}>
                 { isSelectedWaterbody && !parentSelected &&
@@ -74,7 +74,12 @@ const EditSearchResult = ({
                 }
                 { 
                     (isSelectedParent && childrenSelected) ? 
-                        <Button size='sm' style={{ backgroundColor: color }}>Merge Waterbodies</Button> :
+                        <Button size='sm' 
+                            style={{ backgroundColor: color }}
+                            onClick={onMerge}
+                        >
+                            Merge Waterbodies
+                        </Button> :
                     (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
                         <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
                             styles={{ input: { '&:checked': { backgroundColor: color }} }}
