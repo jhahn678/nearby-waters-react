@@ -19,12 +19,15 @@ export const useAutoCompleteNameQuery = ({
     const result = useQuery<string[], Error>({
         queryKey: 'autocomplete-distinct-names',
         queryFn: () => getDistinctNames(value),
-        enabled: shouldQuery && value.length >= 6
+        enabled: shouldQuery && value.length > 3
     })
 
     useEffect(() => {
         if(value.length < 4 && result.data){
             result.remove()
+        }
+        if(value.length >= 4 && !result.isLoading && shouldQuery){
+            result.refetch()
         }
     },[value])
 
