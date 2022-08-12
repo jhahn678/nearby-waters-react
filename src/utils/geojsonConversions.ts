@@ -1,7 +1,11 @@
-import { Feature, FeatureCollection } from "geojson";
+import { Feature, FeatureCollection, GeometryCollection } from "geojson";
 import { LngLatBoundsLike } from "mapbox-gl";
 import { PopulatedWaterbody} from "../types/Waterbody";
 import bbox from '@turf/bbox'
+
+interface IPopulatedWaterbody extends PopulatedWaterbody{
+    simplified_geometries: GeometryCollection
+}
 
 export const waterbodyToFeatureCollection = (waterbody: PopulatedWaterbody | undefined): FeatureCollection | undefined => {
 
@@ -18,7 +22,15 @@ export const waterbodyToFeatureCollection = (waterbody: PopulatedWaterbody | und
         } 
     })
 
+    // @ts-ignore
+    // const features = waterbody.simplified_geometries.geometries.map<Feature>(x => ({
+    //     type: 'Feature',
+    //     properties: {},
+    //     geometry: x
+    // }))
+
     return { type: 'FeatureCollection', features }
+
 }
 
 
