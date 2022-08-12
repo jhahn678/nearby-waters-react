@@ -17,9 +17,9 @@ export type StateName =
 
 
 export const states: StateAbbreviation[] = [
-    'AK', 'AL', 'TX', 'SC', 'VA', 'WV', 'MS', 'KS', 'AR', 'FL', 'DC',
-    'DE', 'GA', 'IL', 'IN', 'MD', 'KY', 'LA', 'MO', 'OH', 'NC', 'NJ',
-    'PA', 'OK', 'TN', 'IA', 'CT', 'WI', 'MA', 'ME', 'MI', 'MN', 'NE',
-    'ND', 'NY', 'NH', 'RI', 'SD', 'VT', 'CA', 'AZ', 'CO', 'NM', 'NV',
-    'UT', 'ID', 'MT', 'OR', 'WA', 'WY', 'HI'
+    'AK', 'AL', 'AR', 'AZ', 'CT', 'CA', 'CO', 'DC', 'DE', 'FL', 'GA', 
+    'HI', 'IL', 'IN', 'IA', 'ID', 'KS', 'KY', 'LA', 'MS', 'MD', 'MO', 
+    'MA', 'ME', 'MI', 'MN', 'MT', 'NC', 'NJ', 'NE', 'ND', 'NY', 'NH', 
+    'NM', 'NV', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TX', 'TN', 
+    'UT', 'VA', 'VT', 'WV', 'WI', 'WA', 'WY'
 ]
