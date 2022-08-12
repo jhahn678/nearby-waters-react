@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useQuery } from 'react-query'
 import axios from '../../utils/axios'
 
 const getDistinctNames = async (value: string): Promise<string[]> => {
-    const res = await axios.get(`/autocomplete/waterbodies/distinct-duplicated-name?value=${value}`)
+    const res = await axios.get(`/autocomplete/waterbodies/distinct-name?value=${value}`)
     return res.data
 }
 
@@ -23,10 +23,10 @@ export const useAutoCompleteNameQuery = ({
     })
 
     useEffect(() => {
-        if(value.length < 4 && result.data){
+        if(value.length < 3 && result.data){
             result.remove()
         }
-        if(value.length >= 4 && !result.isLoading && shouldQuery){
+        if(value.length >= 3 && !result.isLoading && shouldQuery){
             result.refetch()
         }
     },[value])
