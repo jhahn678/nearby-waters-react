@@ -218,7 +218,7 @@ const TestPage = (): JSX.Element => {
                     transition: { duration: 1, type: 'spring' }
                 }}
             >
-                <Map 
+                <Map
                     data={waterbodyToFeatureCollection(waterbody)} 
                     dismissMap={() => dispatch({ type: 'CLEAR_WATERBODY' })}
                 />
