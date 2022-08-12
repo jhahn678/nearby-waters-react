@@ -14,7 +14,7 @@ interface GetWaterbodiesQuery {
 const getWaterbodiesByName = async ({
     name, weight, state
 }: GetWaterbodiesQuery): Promise<PopulatedWaterbody[]> => {
-    let url = `/waterbodies/duplicate-name?name=${name}`
+    let url = `/waterbodies/name?name=${name}`
     if(weight) url += `&weight=${weight}`
     if(state) url += `&state=${state}`
     const res = await axios.get(url)
