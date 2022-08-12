@@ -10,7 +10,6 @@ interface MergeWaterbodyArgs {
 }
 
 const mergeWaterbodies = (args: MergeWaterbodyArgs) => {
-    console.log('Sending delete request')
     return axios.patch('/waterbodies', {
         parent: args.parentWaterbody,
         children: args.childrenWaterbodies
