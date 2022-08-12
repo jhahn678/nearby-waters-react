@@ -160,7 +160,7 @@ const EditPage = (): JSX.Element => {
         </ul>
       </div >
       <div className={classes.mapSection}>
-        <Map waterbodies={waterbodyResults} bounds={state.bounds} />
+        <Map mapId='edit-map' waterbodies={waterbodyResults} bounds={state.bounds} />
       </div>
     </Page>
   )

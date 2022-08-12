@@ -11,6 +11,7 @@ import { LngLatBoundsLike } from 'react-map-gl'
 
 
 type Props = { 
+    mapId?: string
     data?: FeatureCollection | undefined,
     waterbodies?: PopulatedWaterbody[] | undefined
     showDismiss?: boolean,
@@ -18,7 +19,7 @@ type Props = {
     bounds?: LngLatBoundsLike | null
 }
 
-const Map = ({ data, waterbodies, showDismiss=false, dismissMap, bounds }: Props) => {
+const Map = ({ mapId, data, waterbodies, showDismiss=false, dismissMap, bounds }: Props) => {
 
     const [boundingBox, setBoundingBox] = useState<LngLatBoundsLike | []>([])
 
@@ -35,7 +36,7 @@ const Map = ({ data, waterbodies, showDismiss=false, dismissMap, bounds }: Props
                 { padding: 40, duration: 1000 }
             )
         }
-        if(mapRef.current && waterbodies){
+        if(mapRef.current && waterbodies && waterbodies.length > 0){
             const bounds = waterbodiesToBBox(waterbodies)
             setBoundingBox(bounds)
             mapRef.current.fitBounds(bounds, { padding: 40, duration: 2000 })
@@ -46,8 +47,7 @@ const Map = ({ data, waterbodies, showDismiss=false, dismissMap, bounds }: Props
     },[data, waterbodies, bounds])
 
     return (
-        <MapGL
-            id='primary-map' reuseMaps={true} ref={mapRef}
+        <MapGL ref={mapRef} reuseMaps={true} id={mapId || 'primary-map'}
             style={{ flex: 1, position: 'relative', borderRadius: '5px' }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
             mapboxAccessToken={process.env.REACT_APP_MAPBOX}
