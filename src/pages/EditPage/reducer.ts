@@ -1,4 +1,5 @@
 import { LngLatBoundsLike } from "mapbox-gl"
+import { GetDistinctNameRes } from "../../hooks/queries/useGetDistinctName"
 import { PopulatedWaterbody } from "../../types/Waterbody"
 import { waterbodyToBBox } from '../../utils/geojsonConversions'
 
@@ -12,9 +13,12 @@ interface State {
     parentWaterbody: string | null
     childrenWaterbodies: string[]
     bounds: LngLatBoundsLike | null
-    //////////////////////////////
-    currentName: number | null
-    allNames: string[]
+    resultsIndex: number | null
+    resultsTotal: number | null 
+    nameIndex: number | null
+    nameTotal: number | null
+    namePosition: number | null
+
 }
 
 export type Action = 
@@ -26,7 +30,7 @@ export type Action =
 | { type: 'CLEAR_WEIGHT' }
 | { type: 'SELECT_STATE', value: string | null }
 | { type: 'CLEAR_STATE' }
-| { type: 'SELECT_WATERBODY', value: PopulatedWaterbody }
+| { type: 'SELECT_WATERBODY', value: PopulatedWaterbody, index?: number }
 | { type: 'CLEAR_WATERBODY' }
 | { type: 'SELECT_PARENT', value: string }
 | { type: 'REMOVE_PARENT' }
@@ -34,10 +38,12 @@ export type Action =
 | { type: 'REMOVE_CHILD', value: string }
 | { type: 'SET_BOUNDS', value: LngLatBoundsLike }
 | { type: 'MERGE_SUCCESS'}
-///////////////////////////////////////////////////////
 | { type: 'NEXT_NAME' }
 | { type: 'LAST_NAME' }
-| { type: 'SET_NAMES', values: string[] }
+| { type: 'SET_DISTINCT_NAME', res: GetDistinctNameRes }
+| { type: 'NEXT_RESULT' }
+| { type: 'LAST_RESULT' }
+| { type: 'SET_TOTAL_RESULTS', total: number }
 
 
 export const initialState: State = {
@@ -50,9 +56,11 @@ export const initialState: State = {
     parentWaterbody: null,
     childrenWaterbodies: [],
     bounds: null,
-    //////////////////////////////
-    currentName: null,
-    allNames: []
+    resultsIndex: null,
+    resultsTotal: null,
+    nameIndex: null,
+    nameTotal: null,
+    namePosition: null
 }
 
 export const reducer = (state: State, action: Action): State => {
@@ -76,8 +84,14 @@ export const reducer = (state: State, action: Action): State => {
             ...state,
             input: '',
             shouldAutocomplete: false,
+            selectedWaterbody: null,
             selectedName: null,
-            bounds: null
+            bounds: null,
+            resultsIndex: null,
+            resultsTotal: null,
+            nameIndex: null,
+            namePosition: null, 
+            nameTotal: null
         }
     }
     else if(action.type === 'INPUT_NAME'){
@@ -121,17 +135,20 @@ export const reducer = (state: State, action: Action): State => {
     }
     else if(action.type === 'SELECT_WATERBODY'){
         const bounds =  waterbodyToBBox(action.value)
-        return {
+        const obj =  {
             ...state,
             selectedWaterbody: action.value._id,
             bounds
         }
+        if(action.index) obj.resultsIndex = action.index;
+        return obj;
     }
     else if(action.type === 'CLEAR_WATERBODY'){
         return {
             ...state,
             selectedWaterbody: null,
-            bounds: null
+            bounds: null,
+            resultsIndex: null
         }
     }
     else if(action.type === 'SELECT_PARENT'){
@@ -181,35 +198,72 @@ export const reducer = (state: State, action: Action): State => {
         }
     }
     else if(action.type === 'NEXT_NAME'){
-        let currentName = 0;
-        if(state.currentName !== null) {
-            currentName = state.currentName + 1;
+        let index = 0;
+        if(state.nameIndex !== null){
+            index = state.nameIndex + 1
         }
+        console.log(index)
         return {
             ...state,
-            currentName,
             shouldAutocomplete: false,
-            selectedName: state.allNames[currentName],
-            input: state.allNames[currentName]
+            nameIndex: index
         }
     }
     else if(action.type === 'LAST_NAME'){
-        let currentName = null;
-        if(state.currentName && state.currentName > 0){
-            currentName = state.currentName - 1
+        let index = null;
+        if(state.nameIndex && state.nameIndex > 0){
+            index = state.nameIndex - 1
         }
         return {
             ...state,
-            currentName,
             shouldAutocomplete: false,
-            selectedName: currentName ? state.allNames[currentName] : null,
-            input: currentName ? state.allNames[currentName] : ''
+            nameIndex: index
         }
     }
-    else if(action.type === 'SET_NAMES'){
-        return{
+    else if(action.type === 'SET_DISTINCT_NAME'){
+        const { position, total, value } = action.res;
+        return {
             ...state,
-            allNames: action.values
+            shouldAutocomplete: false,
+            namePosition: position,
+            nameTotal: total,
+            input: value,
+            selectedName: value
+        }
+    }
+    else if(action.type === 'NEXT_RESULT'){
+        const { resultsIndex, resultsTotal } = state; 
+        let index: number | null = 0;
+        if(!resultsTotal){
+            index = null;
+        }else if(resultsIndex !== null && resultsIndex < resultsTotal - 1){
+            index = resultsIndex + 1
+        }
+        return {
+            ...state,
+            resultsIndex: index
+        }
+    }
+    else if(action.type === 'LAST_RESULT'){
+        const { resultsIndex, resultsTotal } = state;
+        let index: number | null = 0;
+        if(!resultsTotal){
+            index = null
+        }else if(resultsIndex){
+            index = resultsIndex - 1;
+        }else if(resultsIndex === 0){
+            index = resultsTotal - 1
+        }
+        return {
+            ...state,
+            resultsIndex: index
+        }
+    }
+    else if(action.type === 'SET_TOTAL_RESULTS'){
+        return {
+            ...state,
+            resultsIndex: null,
+            resultsTotal: action.total
         }
     }
     else{

@@ -16,7 +16,7 @@ import { v4 as uuid} from 'uuid'
 import EditSearchResult from '../../components/edit/EditSearchResult/EditSearchResult'
 import { useNavigate } from 'react-router-dom'
 import ConfirmModal from '../../components/modals/ConfirmModal/ConfirmModal'
-import { useGetDistinctNames } from '../../hooks/queries/useGetDistinctNames'
+import { useGetDistinctName } from '../../hooks/queries/useGetDistinctName'
 
 
 const EditPage = (): JSX.Element => {
@@ -25,9 +25,6 @@ const EditPage = (): JSX.Element => {
   
   const { mutate: mergeWaterbody } = useMergeWaterbodyMutation()
 
-  // const { isAuthenticated } = useAuth()
-  // const navigate = useNavigate()
-
   const { 
     data: nameResults
   } = useAutoCompleteNameQuery({
@@ -35,13 +32,6 @@ const EditPage = (): JSX.Element => {
     shouldQuery: state.shouldAutocomplete
   })
 
-  const { 
-    result: { data: namesList },
-    totalNames
-  } = useGetDistinctNames({
-    onSuccess: values => dispatch({ type: 'SET_NAMES', values })
-  })
-  
 
   const { 
     data: waterbodyResults,
@@ -52,7 +42,10 @@ const EditPage = (): JSX.Element => {
     name: state.selectedName,
     state: state.state,
     weight: state.weight,
-    shouldQuery: Boolean(state.selectedName)
+    shouldQuery: Boolean(state.selectedName),
+    onSuccess: data => {
+      dispatch({ type: 'SET_TOTAL_RESULTS', total: data.length })
+    }
   })
 
 
@@ -82,11 +75,30 @@ const EditPage = (): JSX.Element => {
     }
   }
 
+
   useEffect(() => {
     if(state.selectedName){
       waterbodiesRefetch()
     }
   },[state.state, state.weight])
+
+  useEffect(() => {
+    if(state.resultsIndex !== null && waterbodyResults && waterbodyResults.length > 0){
+      dispatch({ 
+        type: 'SELECT_WATERBODY', 
+        value: waterbodyResults[state.resultsIndex]
+      })
+    }
+  },[state.resultsIndex])
+
+  useGetDistinctName({
+    index: state.nameIndex,
+    state: state.state,
+    weight: state.weight,
+    onSuccess: res => {
+      dispatch({ type: 'SET_DISTINCT_NAME', res })
+    }
+  })
   
   useEffect(() => {
     
@@ -96,6 +108,15 @@ const EditPage = (): JSX.Element => {
       }
       if(e.key === 'ArrowLeft'){
         dispatch({ type: 'LAST_NAME'})
+      }
+      if(e.key === 'ArrowUp'){
+        dispatch({ type: 'LAST_RESULT' })
+      }
+      if(e.key === 'ArrowDown'){
+        dispatch({ type: 'NEXT_RESULT' })
+      }
+      if(e.key === 'Escape'){
+        dispatch({ type: 'CLEAR_NAME' })
       }
     }
 
@@ -112,11 +133,14 @@ const EditPage = (): JSX.Element => {
       <div className={classes.controlSection}>
         <TextInput
           rightSection={<BsX fontSize={24} onClick={handleClearInput}/>}
-          label={state.currentName ? `Waterbody Name ${state.currentName}/${totalNames}` : 'Waterbody Name'} size='lg'
+          label={(state.namePosition && state.nameTotal) 
+            ? `Waterbody Name ${state.namePosition}/${state.nameTotal}` 
+            : 'Waterbody Name'
+          } 
           labelProps={{ style: { color: 'white' }}}
           placeholder="Select Waterbody Name"
           onChange={handleInput} onKeyDown={handleKeyDown}
-          value={state.input}
+          value={state.input} size='lg'
         />
         { nameResults &&
           <motion.div className={classes.autocompleteContainer}
@@ -148,7 +172,7 @@ const EditPage = (): JSX.Element => {
         <ul className={classes.resultsList}>
           { waterbodiesLoading && <Loader size='lg'/> }
           { !waterbodiesLoading && waterbodyResults && waterbodyResults.map((wb, index) => (
-            <EditSearchResult key={wb._id} onMerge={handleMerge}
+            <EditSearchResult key={wb._id} onMerge={handleMerge} index={index}
               data={wb} color={genColor(index)} dispatch={dispatch}
               isSelectedWaterbody={wb._id === state.selectedWaterbody}
               isSelectedParent={wb._id === state.parentWaterbody} 
