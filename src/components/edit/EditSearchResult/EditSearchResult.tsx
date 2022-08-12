@@ -9,6 +9,7 @@ import useModalContext from '../../../hooks/contexts/modal/useModalContext'
 
 interface Props {
     data: PopulatedWaterbody
+    index: number
     color: string
     isSelectedWaterbody: boolean
     isSelectedParent: boolean
@@ -20,7 +21,7 @@ interface Props {
 }
 
 const EditSearchResult = ({
-    data, color, isSelectedWaterbody, isSelectedParent, 
+    data, index, color, isSelectedWaterbody, isSelectedParent, 
     isSelectedChild, parentSelected, childrenSelected, 
     dispatch, onMerge
 }: Props): JSX.Element => {
@@ -34,7 +35,7 @@ const EditSearchResult = ({
 
     const handleClick = () => {
         if(!isSelectedWaterbody){
-            dispatch({ type: 'SELECT_WATERBODY', value: data })
+            dispatch({ type: 'SELECT_WATERBODY', value: data, index })
         }
         else if(!isSelectedParent && !isSelectedChild){
             dispatch({ type: 'CLEAR_WATERBODY'}) 
