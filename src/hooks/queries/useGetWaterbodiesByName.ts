@@ -7,7 +7,8 @@ interface GetWaterbodiesQuery {
     name: string | null,
     state: string | null,
     weight: number | null,
-    shouldQuery: boolean
+    shouldQuery: boolean,
+    onSuccess: (data: PopulatedWaterbody[]) => void
 }
 
 
@@ -27,7 +28,8 @@ export const useGetWaterbodiesByName = (args: GetWaterbodiesQuery) => {
     const result = useQuery({
         queryKey: `${args.name}-waterbodies`,
         queryFn: () => getWaterbodiesByName(args),
-        enabled: args.shouldQuery
+        enabled: args.shouldQuery,
+        onSuccess: args.onSuccess
     })
     return result;
 }
