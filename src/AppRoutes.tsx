@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DemoPage from './pages/DemoPage/DemoPage'
 import AuthPage from './pages/AuthPage/AuthPage'
 import EditPage from "./pages/EditPage/EditPage";
+import AboutPage from "./pages/AboutPage/AboutPage";
 
 
 const AppRoutes = (): JSX.Element => {
@@ -11,7 +12,7 @@ const AppRoutes = (): JSX.Element => {
         <Routes>
             <Route index element={<DemoPage/>}/>
             <Route path='/demo' element={<DemoPage/>}/>
-            {/* <Route path='/about' element={<AboutPage/>}/> */}
+            <Route path='/about' element={<AboutPage/>}/>
             <Route path='/login' element={<AuthPage/>}/>
             <Route path='/edit' element={<EditPage/>}/>
         </Routes>
