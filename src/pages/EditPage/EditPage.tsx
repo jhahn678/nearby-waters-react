@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, ChangeEvent, MouseEventHandler} from 'react'
+import React, { useReducer, useEffect, useRef, ChangeEvent, MouseEventHandler, KeyboardEventHandler} from 'react'
 import classes from './EditPage.module.css'
 import Page from '../../components/shared/Page'
 import Map from '../../components/map/Map'
@@ -16,15 +16,17 @@ import { v4 as uuid} from 'uuid'
 import EditSearchResult from '../../components/edit/EditSearchResult/EditSearchResult'
 import { useNavigate } from 'react-router-dom'
 import ConfirmModal from '../../components/modals/ConfirmModal/ConfirmModal'
+import { useGetDistinctNames } from '../../hooks/queries/useGetDistinctNames'
 
 
 const EditPage = (): JSX.Element => {
 
   const [state, dispatch] = useReducer(reducer, initialState)
   
-  const { isAuthenticated } = useAuth()
-  const mergeWaterbody = useMergeWaterbodyMutation()
-  const navigate = useNavigate()
+  const { mutate: mergeWaterbody } = useMergeWaterbodyMutation()
+
+  // const { isAuthenticated } = useAuth()
+  // const navigate = useNavigate()
 
   const { 
     data: nameResults
@@ -32,6 +34,14 @@ const EditPage = (): JSX.Element => {
     value: state.input, 
     shouldQuery: state.shouldAutocomplete
   })
+
+  const { 
+    result: { data: namesList },
+    totalNames
+  } = useGetDistinctNames({
+    onSuccess: values => dispatch({ type: 'SET_NAMES', values })
+  })
+  
 
   const { 
     data: waterbodyResults,
@@ -45,7 +55,11 @@ const EditPage = (): JSX.Element => {
     shouldQuery: Boolean(state.selectedName)
   })
 
+
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => dispatch({ type: 'INPUT_NAME', value: e.target.value })
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = e => {
+    if(e.key === 'Enter') dispatch({ type: 'SELECT_NAME_AS_INPUT' })
+  }
   const handleClearInput: MouseEventHandler<SVGElement> = e => {
       e.stopPropagation()
       dispatch({ type: 'CLEAR_NAME' })
@@ -55,11 +69,39 @@ const EditPage = (): JSX.Element => {
     waterbodiesRefetch()
     dispatch({ type: 'CLEAR_WATERBODY' })
   }
+
+  const handleMerge = () => {
+    const { parentWaterbody, childrenWaterbodies } = state;
+    if(parentWaterbody && childrenWaterbodies.length > 0){
+      mergeWaterbody({ parentWaterbody, childrenWaterbodies }, {
+        onSuccess: () => {
+          dispatch({ type: 'MERGE_SUCCESS' })
+          waterbodiesRefetch()
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    if(state.selectedName){
+      waterbodiesRefetch()
+    }
+  },[state.state, state.weight])
   
   useEffect(() => {
-    if(!isAuthenticated){
-      navigate('/login', { replace: true })
+    
+    const handleKey = (e: KeyboardEvent) => {
+      if(e.key === 'ArrowRight'){
+        dispatch({ type: 'NEXT_NAME' })
+      }
+      if(e.key === 'ArrowLeft'){
+        dispatch({ type: 'LAST_NAME'})
+      }
     }
+
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+
   }, [])
   
 
@@ -70,10 +112,10 @@ const EditPage = (): JSX.Element => {
       <div className={classes.controlSection}>
         <TextInput
           rightSection={<BsX fontSize={24} onClick={handleClearInput}/>}
-          label='Waterbody Name' size='lg'
+          label={state.currentName ? `Waterbody Name ${state.currentName}/${totalNames}` : 'Waterbody Name'} size='lg'
           labelProps={{ style: { color: 'white' }}}
           placeholder="Select Waterbody Name"
-          onChange={handleInput}
+          onChange={handleInput} onKeyDown={handleKeyDown}
           value={state.input}
         />
         { nameResults &&
@@ -91,28 +133,28 @@ const EditPage = (): JSX.Element => {
           </motion.div>
         }
         <div className={classes.flexrow}>
-          <Select data={states} style={{ width: '45%'}}
+          <Select data={['Any', ...states]} style={{ width: '45%'}}
             labelProps={{ style: { color: '#fff' }}} size='md'
-            placeholder='Filter by state' label='State'
+            placeholder='Filter by state' label='State' searchable
             onChange={value => dispatch({ type: 'SELECT_STATE', value })}
           />
           <Select style={{ width: '45%'}} size='md'
             labelProps={{ style: { color: '#fff' }}}
             placeholder='Filter by weight' label='Weight'
-            data={['1', '1.1', '1.2', '1.3', '1.4']}
+            data={['Any', '1', '1.1', '1.2', '1.3', '1.4']}
             onChange={value => dispatch({ type: 'SELECT_WEIGHT', value })}
           />
         </div>
         <ul className={classes.resultsList}>
           { waterbodiesLoading && <Loader size='lg'/> }
           { !waterbodiesLoading && waterbodyResults && waterbodyResults.map((wb, index) => (
-            <EditSearchResult key={wb._id} data={wb} color={genColor(index)} 
+            <EditSearchResult key={wb._id} onMerge={handleMerge}
+              data={wb} color={genColor(index)} dispatch={dispatch}
               isSelectedWaterbody={wb._id === state.selectedWaterbody}
               isSelectedParent={wb._id === state.parentWaterbody} 
               parentSelected={Boolean(state.parentWaterbody)}
               childrenSelected={state.childrenWaterbodies.length > 0}
               isSelectedChild={state.childrenWaterbodies.includes(wb._id)}
-              onMutation={() => waterbodiesRefetch()} dispatch={dispatch}
             />
           ))}
         </ul>

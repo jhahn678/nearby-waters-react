@@ -12,11 +12,15 @@ interface State {
     parentWaterbody: string | null
     childrenWaterbodies: string[]
     bounds: LngLatBoundsLike | null
+    //////////////////////////////
+    currentName: number | null
+    allNames: string[]
 }
 
 export type Action = 
 | { type: 'INPUT_NAME', value: string }
 | { type: 'SELECT_NAME', value: string }
+| { type: 'SELECT_NAME_AS_INPUT' }
 | { type: 'CLEAR_NAME' }
 | { type: 'SELECT_WEIGHT', value: string | null }
 | { type: 'CLEAR_WEIGHT' }
@@ -29,6 +33,11 @@ export type Action =
 | { type: 'SELECT_CHILD', value: string }
 | { type: 'REMOVE_CHILD', value: string }
 | { type: 'SET_BOUNDS', value: LngLatBoundsLike }
+| { type: 'MERGE_SUCCESS'}
+///////////////////////////////////////////////////////
+| { type: 'NEXT_NAME' }
+| { type: 'LAST_NAME' }
+| { type: 'SET_NAMES', values: string[] }
 
 
 export const initialState: State = {
@@ -40,7 +49,10 @@ export const initialState: State = {
     selectedWaterbody: null,
     parentWaterbody: null,
     childrenWaterbodies: [],
-    bounds: null
+    bounds: null,
+    //////////////////////////////
+    currentName: null,
+    allNames: []
 }
 
 export const reducer = (state: State, action: Action): State => {
@@ -50,6 +62,13 @@ export const reducer = (state: State, action: Action): State => {
             shouldAutocomplete: false,
             selectedName: action.value,
             input: action.value
+        }
+    }
+    else if(action.type === 'SELECT_NAME_AS_INPUT'){
+        return {
+            ...state,
+            shouldAutocomplete: false,
+            selectedName: state.input
         }
     }
     else if(action.type === 'CLEAR_NAME'){
@@ -71,6 +90,10 @@ export const reducer = (state: State, action: Action): State => {
     }
     else if(action.type === 'SELECT_WEIGHT'){
         if(!action.value) return state;
+        if(action.value === 'Any') return { 
+            ...state, 
+            weight: null 
+        }
         return {
             ...state,
             weight: parseFloat(action.value)
@@ -84,10 +107,11 @@ export const reducer = (state: State, action: Action): State => {
     }
     else if(action.type === 'SELECT_STATE'){
         if(!action.value) return state;
-        return {
-            ...state,
-            state: action.value
+        if(action.value === 'Any') return { 
+            ...state, 
+            state: null 
         }
+        return { ...state, state: action.value }
     }
     else if(action.type === 'CLEAR_STATE'){
         return {
@@ -146,6 +170,48 @@ export const reducer = (state: State, action: Action): State => {
             bounds: action.value
         }
     }  
+    else if(action.type === 'MERGE_SUCCESS'){
+        return {
+            ...state,
+            parentWaterbody: null,
+            childrenWaterbodies: [],
+            selectedWaterbody: null,
+            bounds: null,
+
+        }
+    }
+    else if(action.type === 'NEXT_NAME'){
+        let currentName = 0;
+        if(state.currentName !== null) {
+            currentName = state.currentName + 1;
+        }
+        return {
+            ...state,
+            currentName,
+            shouldAutocomplete: false,
+            selectedName: state.allNames[currentName],
+            input: state.allNames[currentName]
+        }
+    }
+    else if(action.type === 'LAST_NAME'){
+        let currentName = null;
+        if(state.currentName && state.currentName > 0){
+            currentName = state.currentName - 1
+        }
+        return {
+            ...state,
+            currentName,
+            shouldAutocomplete: false,
+            selectedName: currentName ? state.allNames[currentName] : null,
+            input: currentName ? state.allNames[currentName] : ''
+        }
+    }
+    else if(action.type === 'SET_NAMES'){
+        return{
+            ...state,
+            allNames: action.values
+        }
+    }
     else{
         return state;
     }
