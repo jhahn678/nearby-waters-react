@@ -4,11 +4,11 @@ import Page from '../../components/shared/Page'
 import Map from '../../components/map/Map'
 import { useAutoCompleteNameQuery } from '../../hooks/queries/useAutoCompleteNameQuery'
 import { useMergeWaterbodyMutation } from '../../hooks/mutations/useMergeWaterbodiesMutation'
-import { TextInput, Select, Loader } from '@mantine/core'
+import { TextInput, Select, Loader, Text, Title } from '@mantine/core'
 import { initialState, reducer } from './reducer'
 import { useGetWaterbodiesByName } from '../../hooks/queries/useGetWaterbodiesByName'
 import { motion } from 'framer-motion'
-import { adminOneAsciiMap, adminOneNames } from '../../types/States'
+import { adminOneAsciiMap } from '../../types/States'
 import { BsX } from 'react-icons/bs'
 import { genColor } from '../../components/map/colors'
 import { v4 as uuid} from 'uuid'
@@ -38,7 +38,8 @@ const EditPage = (): JSX.Element => {
     data: waterbodyResults,
     isLoading: waterbodiesLoading,
     isError: waterbodiesError,
-    refetch: waterbodiesRefetch
+    refetch: waterbodiesRefetch,
+    isFetched: hasFetched
   } = useGetWaterbodiesByName({ 
     name: state.selectedName,
     adminOne: state.adminOne,
@@ -161,6 +162,9 @@ const EditPage = (): JSX.Element => {
         </div>
         <ul className={classes.resultsList}>
           { waterbodiesLoading && <Loader size='lg'/> }
+          { !waterbodiesLoading && waterbodyResults && waterbodyResults.length === 0 &&
+            <Title order={3} style={{ color: 'whitesmoke', marginTop: '.5em'}}>No Results Found</Title>
+          }
           { !waterbodiesLoading && waterbodyResults && waterbodyResults.map((wb, index) => (
             <EditSearchResult key={wb._id} onMerge={handleMerge} index={index}
               data={wb} color={genColor(index)} dispatch={dispatch}
@@ -171,6 +175,11 @@ const EditPage = (): JSX.Element => {
               isSelectedChild={state.childrenWaterbodies.includes(wb._id)}
             />
           ))}
+          { !hasFetched &&  
+            <Text style={{ color: 'whitesmoke', marginTop: '.5em', fontSize: '1.2em'}}>
+              Search for waterbodies by name
+            </Text>
+          }
         </ul>
       </div >
       <div className={classes.mapSection}>

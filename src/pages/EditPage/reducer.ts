@@ -13,7 +13,7 @@ interface State {
     childrenWaterbodies: string[]
     bounds: LngLatBoundsLike | null
     resultsIndex: number | null
-    resultsTotal: number | null 
+    resultsTotal: number | null,
 }
 
 export type Action = 

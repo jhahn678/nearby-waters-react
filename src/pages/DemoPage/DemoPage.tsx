@@ -6,7 +6,7 @@ import classes from './index.module.css'
 import Page from '../../components/shared/Page'
 import CurrentLocationButton from '../../components/search/CurrentLocationButton/CurrentLocationButton'
 import { useAutoComplete } from '../../hooks/queries/useAutoComplete'
-import { SegmentedControl, TextInput, Text } from '@mantine/core'
+import { SegmentedControl, TextInput, Text, Loader, Title } from '@mantine/core'
 import { BiSearch } from 'react-icons/bi'
 import AutocompleteWaterbody from '../../components/search/AutocompleteResult/AutocompleteWaterbody'
 import AutocompletePark from '../../components/search/AutocompleteResult/AutocompletePark'
@@ -45,7 +45,7 @@ const TestPage = (): JSX.Element => {
     const { 
         results, 
         isError, 
-        isLoading 
+        isLoading,
     } = useAutoComplete({ 
         input: state.input, 
         coords: state.coords, 
@@ -106,17 +106,16 @@ const TestPage = (): JSX.Element => {
                     <Text color='#fefefe' size='lg'>Search By Place or Waterbody</Text>
                     <TextInput className={classes.searchBar} value={state.input}
                         size='lg' placeholder='Place or Waterbody'
-                        wrapperProps={{ style: { width: '34vw' }}} 
                         onChange={e => dispatch({ type: 'INPUT_VALUE', value: e.target.value })}
                         icon={<BiSearch/>}
                     />
                     <Text color='rgb(210,210,210)' 
                     className={classes.tip} size='sm'
-                    >Queries should be formatted: Place, State</Text>
+                    >Queries should be formatted: Place, State/Province</Text>
                     
                     <Text color='#fefefe' size='md'>Toggle Output</Text>
-                    <SegmentedControl  
-                        style={{ width: '34vw', marginTop: '.5em' }}
+                    <SegmentedControl 
+                        className={classes.toggleOutput} 
                         color="grayblue" value={state.autocompleteType} data={[
                         { label: 'All', value: 'ALL' },
                         { label: 'Locations', value: 'GEOPLACES' },
@@ -151,7 +150,7 @@ const TestPage = (): JSX.Element => {
                     <Text color='#fefefe' size='sm' style={{ marginTop: '1em', marginBottom: '2em'}}>
                         The above is a demonstration of the in-app autocomplete search bar.
                         Set your coordinates to simulate location-based autocomplete results 
-                        within the United States
+                        within North America
                     </Text>
                 </motion.div>
                 
@@ -177,6 +176,7 @@ const TestPage = (): JSX.Element => {
                     transition: { duration: 1, type: 'spring' }
                 }}
             >
+                { isLoading && <Loader size='md'/>}
                 { state.shouldQueryAutocomplete && 
                     results.map(res => (
                         res.type === 'WATERBODY' ? (
@@ -208,6 +208,37 @@ const TestPage = (): JSX.Element => {
                             />
                         ))
                     )
+                }
+                {
+                    !state.shouldQueryAutocomplete && !state.shouldQueryLocation && 
+                    <div className={classes.instructions}>
+                        <Title order={2} style={{ color: 'whitesmoke' }}>To demo the in-app search:</Title>
+                        <ul className={classes.instructionsList}>
+                            <li>
+                                Click the <i>Use My Current Location</i> button or manually enter in a pair 
+                                of coordinates to simulate device location
+                            </li>
+                            <li className={classes.subListItem}>
+                                If coordinates are omitted, the autocomplete search will not take into account 
+                                proximity when providing the user with results
+                            </li>
+                            <li>Use the search bar to search for:</li>
+                            <li className={classes.subListItem}> A waterbody by name</li>
+                            <li className={classes.subsubListItem}> Case insensitive, diacritic sensitive</li>
+                            <li className={classes.subListItem}>A city, town, place, park, etc.</li>
+                            <li className={classes.subsubListItem}>
+                                The selected location will be used to query for waterbodies near its coordinates
+                            </li>
+                            <li>Tips:</li>
+                            <li className={classes.subListItem}>
+                                Any input can be followed with ", state/province/abbreviation" 
+                                to narrow your search within said geographic entity
+                            </li>
+                            <li className={classes.subListItem}>
+                                Typos, mispellings and word order are not accounted for. 
+                            </li>
+                        </ul>
+                    </div>
                 }
             </motion.div>
 
