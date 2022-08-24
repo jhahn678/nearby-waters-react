@@ -86,7 +86,7 @@ const SearchNearLocationCard = ({
                         <Title order={4} style={{ fontWeight: '500' }}>
                             {selectedGeoplace.name}
                         </Title>
-                        <Text>{selectedGeoplace.county}, {selectedGeoplace.state}</Text>
+                        <Text>{selectedGeoplace.county}, {selectedGeoplace.admin_one}</Text>
                     </div>
                     <BsX size={32} className={classes.view} onClick={onClose}/> 
                 </div>

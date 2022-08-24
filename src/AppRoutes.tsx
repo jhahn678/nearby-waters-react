@@ -14,7 +14,7 @@ const AppRoutes = (): JSX.Element => {
             <Route path='/demo' element={<DemoPage/>}/>
             <Route path='/about' element={<AboutPage/>}/>
             <Route path='/login' element={<AuthPage/>}/>
-            <Route path='/edit' element={<EditPage/>}/>
+            <Route path='/explore' element={<EditPage/>}/>
         </Routes>
     </BrowserRouter>
   )

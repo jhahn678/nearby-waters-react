@@ -185,7 +185,7 @@ const TestPage = (): JSX.Element => {
                                 onSelect={() => dispatch({ type: 'SELECT_WATERBODY', _id: res._id })}
                                 onClose={() => dispatch({ type: 'CLEAR_WATERBODY' })}
                             /> ):
-                        (res.type === 'GEOPLACE' && res.fcode === 'PRK') ? 
+                        (res.type === 'GEOPLACE' && ['PRK', 'RES'].includes(res.fcode)) ? 
                             <AutocompletePark  key={res._id} data={res}
                                 onSelect={() => dispatch({ type: 'SELECT_LOCATION', geoplace: res})}
                                 onClose={() => dispatch({ type: 'CLEAR_LOCATION'})}

@@ -33,12 +33,16 @@ const AutocompleteWaterbody = ({ data, onSelect, onClose, isSelected }: Props): 
                 <div className={classes.icon}><BsWater size={32}/></div>
                 <div>
                     <Title order={3} style={{ fontWeight: '500' }} className={classes.title}>{data.name}</Title>
-                    {
-                        data.counties.length > 0 && data.counties.length <= 2 && data.states.length === 1 ?
-                            <Text>{data.counties[0]}, {stateAbbrToName(data.states[0])}</Text> : 
-                        data.states.length === 1 ?  
-                            <Text>{stateAbbrToName(data.states[0])}, {data.country}</Text> :
-                            <Text>{data.subregion} {data.country}</Text>
+                    { 
+                        data.admin_two && data.admin_two.length === 1 ?
+                            <Text>{data.admin_two[0]}, {data.admin_one[0]}</Text> :
+                        data.admin_one.length === 1 ?
+                            <Text>{data.admin_one[0]}, {data.country}</Text> :
+                        data.admin_one.length > 1 && data.subregion ?
+                            <Text>{data.subregion} {data.country}</Text> :
+                        data.admin_one.length > 1 ?
+                            <Text>{`${data.admin_one[0]} + ${data.admin_one.length - 1} more`}, {data.country}</Text> :
+                            <Text>{data.country}</Text>
                     }
                 </div>
                 { !isSelected ? 
@@ -53,11 +57,13 @@ const AutocompleteWaterbody = ({ data, onSelect, onClose, isSelected }: Props): 
                     <Label label='Country'/>
                     <Text size='md'>{data.country}</Text>
                     <Label label='Subregion'/>
-                    <Text size='md'>{data.subregion}</Text>
-                    <Label label='States'/>
-                    <Text size='md'>{data.states.map(x => stateAbbrToName(x)).join(', ')}</Text>
-                    <Label label='Counties'/>
-                    <Text size='md' style={{height: 100, overflowY: 'scroll' }}>{data.counties.join(', ')}</Text>
+                    <Text size='md'>{data.subregion ||'N/A'}</Text>
+                    <Label label={data.ccode === 'CA' ? 'Provinces' : 'States'}/>
+                    <Text size='md'>{data.admin_one.join(', ')}</Text>
+                    { data.admin_two && data.admin_two.length > 0 && <>
+                        <Label label='Counties'/>
+                        <Text size='md' style={{height: 100, overflowY: 'scroll' }}>{data.admin_two.join(', ')}</Text>
+                    </>}
                 </div>
             }
         </div>

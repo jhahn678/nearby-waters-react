@@ -20,7 +20,13 @@ const AutocompleteGeoplace = ({ data, onSelect, onClose }: Props): JSX.Element =
                 <div className={classes.icon}><BsFlag size={32}/></div>
                 <div>
                     <Title order={3} style={{ fontWeight: '500' }}>{data.name}</Title>
-                    <Text>{data.county}, {data.state}</Text>
+                    { 
+                        data.county ?
+                            <Text>{data.county}, {data.admin_one}</Text> :
+                        data.admin_one ? 
+                            <Text>{data.admin_one}, {data.country}</Text> :
+                            <Text>{data.country}</Text>
+                    }
                 </div>
                 <BsSearch size={28} className={classes.view}/>
             </div>

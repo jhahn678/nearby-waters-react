@@ -6,6 +6,7 @@ import { Text, Checkbox, Button } from '@mantine/core'
 import { motion } from 'framer-motion'
 import { BsTrash } from 'react-icons/bs'
 import useModalContext from '../../../hooks/contexts/modal/useModalContext'
+import { useAuth } from '../../../hooks/zustand/useAuth'
 
 interface Props {
     data: PopulatedWaterbody
@@ -27,6 +28,7 @@ const EditSearchResult = ({
 }: Props): JSX.Element => {
 
     const { dispatch: modalDispatch } = useModalContext()
+    const {isAuthenticated } = useAuth()
 
     const handleDelete: MouseEventHandler = e => {
         e.stopPropagation()
@@ -64,37 +66,44 @@ const EditSearchResult = ({
         >
             <div className={classes.color} style={{ backgroundColor: color }}/>
             <div className={classes.details}>
-                <Text>{data.name} &bull; {data.states.length <= 3 ? data.states.join(', ') : `${data.states.length} states`}</Text>
-                <Text>{data.geometries.length} geometries &bull; {data.counties.length} counties</Text>
+                <Text>{data.name} &bull; {data.geometries.length === 1 ? '1 geometry' : `${data.geometries.length} geometries`}</Text>
+                <Text>
+                    { data.admin_one.length === 1 ? 
+                        `${data.admin_one}` : 
+                        ( data.ccode === 'CA' ? `${data.admin_one.length} provinces` : `${data.admin_one.length} states` )
+                    } &bull; {data.country}
+                </Text>
             </div>
-            <div className={classes.actions}>
-                { isSelectedWaterbody && !parentSelected &&
-                    <BsTrash size={24} onClick={handleDelete}
-                        style={{ marginRight: 16, cursor: 'pointer' }} 
-                    /> 
-                }
-                { 
-                    (isSelectedParent && childrenSelected) ? 
-                        <Button size='sm' 
-                            style={{ backgroundColor: color }}
-                            onClick={onMerge}
-                        >
-                            Merge Waterbodies
-                        </Button> :
-                    (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
-                        <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
-                            styles={{ input: { '&:checked': { backgroundColor: color }} }}
-                            checked={isSelectedParent} 
-                            onChange={handleSelectParent} 
-                        /> :
-                    (parentSelected && !isSelectedParent) &&
-                        <Checkbox 
-                            checked={isSelectedChild} 
-                            onChange={handleSelectChild} 
-                            label={isSelectedChild ? 'Selected as child' : 'Select as child'}
-                        />
-                }
-            </div>
+            { isAuthenticated &&
+                <div className={classes.actions}>
+                    { isSelectedWaterbody && !parentSelected &&
+                        <BsTrash size={24} onClick={handleDelete}
+                            style={{ marginRight: 16, cursor: 'pointer' }} 
+                        /> 
+                    }
+                    { 
+                        (isSelectedParent && childrenSelected) ? 
+                            <Button size='sm' 
+                                style={{ backgroundColor: color }}
+                                onClick={onMerge}
+                            >
+                                Merge Waterbodies
+                            </Button> :
+                        (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
+                            <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
+                                styles={{ input: { '&:checked': { backgroundColor: color }} }}
+                                checked={isSelectedParent} 
+                                onChange={handleSelectParent} 
+                            /> :
+                        (parentSelected && !isSelectedParent) &&
+                            <Checkbox 
+                                checked={isSelectedChild} 
+                                onChange={handleSelectChild} 
+                                label={isSelectedChild ? 'Selected as child' : 'Select as child'}
+                            />
+                    }
+                </div>
+            }
         </motion.li>
     )
 }

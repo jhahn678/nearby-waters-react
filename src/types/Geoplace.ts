@@ -1,15 +1,13 @@
-import { StateAbbreviation, StateName } from "./States";
-
 export interface IGeoplace {
     _id: string
     name: string
     fclass: string
     fcode: string
     country: string
-    state: StateName
-    abbr: StateAbbreviation
+    admin_one: string
+    abbr: string
     geometry: GeoJSON.Point
-    county: string
+    county?: string
     weight: number
     type?: 'GEOPLACE'
 }

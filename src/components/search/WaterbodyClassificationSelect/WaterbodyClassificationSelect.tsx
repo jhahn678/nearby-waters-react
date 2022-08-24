@@ -25,6 +25,7 @@ const data: SelectOption[] = [
     { value: 'bend', label: "Bend" },
     { value: 'beach', label: 'Beach' },
     { value: 'slough', label: 'Slough'},
+    { value: 'strait', label: 'Strait'},
     { value: 'unknown', label: 'Other' }
 ]
 
@@ -47,7 +48,7 @@ const WaterbodyClassificationSelect = ({
 
     return (
         <MultiSelect
-            size='xs'
+            size='xs' searchable
             style={{ width: '100%' }}
             styles={{ defaultVariant: { backgroundColor: 'rgba(255,255,255,.7)'}}}
             data={data} 

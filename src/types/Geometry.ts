@@ -1,5 +1,4 @@
 import { GeometryObject } from 'geojson'
-import { StateAbbreviation } from './States';
 import { IWaterbody, WaterbodyClassifications } from './Waterbody'
 
 export interface Geometry {
@@ -8,11 +7,13 @@ export interface Geometry {
     name: string
     classification: WaterbodyClassifications
     geometry: GeometryObject
-    states: StateAbbreviation[]
     parent_waterbody: string | IWaterbody
     geometry_simplified: GeometryObject
-    counties: string[]
     name_lower: string
+    states?: string[],
+    admin_one?: string[],
+    admin_two?: string[],
+    counties?: string[],
 }
 
 export default Geometry
