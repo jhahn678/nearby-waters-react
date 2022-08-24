@@ -5,19 +5,19 @@ import { PopulatedWaterbody } from '../../types/Waterbody'
 
 interface GetWaterbodiesQuery {
     name: string | null,
-    state: string | null,
-    weight: number | null,
+    adminOne: string | null,
+    classifications: string[],
     shouldQuery: boolean,
     onSuccess: (data: PopulatedWaterbody[]) => void
 }
 
 
 const getWaterbodiesByName = async ({
-    name, weight, state
+    name, classifications, adminOne
 }: GetWaterbodiesQuery): Promise<PopulatedWaterbody[]> => {
     let url = `/waterbodies/name?name=${name}`
-    if(weight) url += `&weight=${weight}`
-    if(state) url += `&state=${state}`
+    if(classifications.length > 0) url += `&classification=${classifications.join(',')}`
+    if(adminOne) url += `&admin_one=${adminOne}`
     const res = await axios.get(url)
     return res.data;
 }

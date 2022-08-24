@@ -1,4 +1,4 @@
-import { StateAbbreviation, StateName } from "../types/States";
+import { StateAbbreviation } from "../types/States";
 
 const states = {
     AR: "Arkansas",
