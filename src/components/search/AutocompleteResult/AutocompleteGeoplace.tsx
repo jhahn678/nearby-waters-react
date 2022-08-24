@@ -21,6 +21,8 @@ const AutocompleteGeoplace = ({ data, onSelect, onClose }: Props): JSX.Element =
                 <div>
                     <Title order={3} style={{ fontWeight: '500' }}>{data.name}</Title>
                     { 
+                        data.fcode === 'ADM1' ?
+                            <Text>{data.country}</Text> :
                         data.county ?
                             <Text>{data.county}, {data.admin_one}</Text> :
                         data.admin_one ? 

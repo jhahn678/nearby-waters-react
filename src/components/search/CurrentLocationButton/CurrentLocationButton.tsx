@@ -1,10 +1,7 @@
-import { useGeolocated } from "react-geolocated";
 import { latlng } from "../../../types/Autocomplete";
 import { Button, Text, Loader, SharedButtonProps } from '@mantine/core'
 import { BiCurrentLocation } from 'react-icons/bi'
-import useModalContext from "../../../hooks/contexts/modal/useModalContext";
-import React, { useState } from 'react'
-import { GEOLOCATION_DISABLED_BODY, GEOLOCATION_UNAVAILABLE_BODY} from '../../../hooks/contexts/modal/constants'
+import React from 'react'
 import useCurrentLocation from "../../../hooks/utils/useCurrentLocation";
 
 

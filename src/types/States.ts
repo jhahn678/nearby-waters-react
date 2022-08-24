@@ -42,6 +42,8 @@ export const adminOneNames: AdminOneName[] = [
     'Nationalparken', 'Kommune Kujalleq', 'Kommuneqarfik Sermersooq', 'Pituffik', 'Qaasuitsup Kommunia', 'Qeqqata Kommunia', 
 ]
 
+
+/** Map of labels and ascii values for admin_one names */
 export const adminOneAsciiMap = [
     {
         "value": "arkansas",
