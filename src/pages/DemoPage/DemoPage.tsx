@@ -180,18 +180,18 @@ const TestPage = (): JSX.Element => {
                 { state.shouldQueryAutocomplete && 
                     results.map(res => (
                         res.type === 'WATERBODY' ? (
-                            <AutocompleteWaterbody key={res._id} data={res} 
-                                isSelected={state.waterbody_id === res._id}
-                                onSelect={() => dispatch({ type: 'SELECT_WATERBODY', _id: res._id })}
+                            <AutocompleteWaterbody key={res.id} data={res} 
+                                isSelected={state.waterbody_id === res.id}
+                                onSelect={() => dispatch({ type: 'SELECT_WATERBODY', id: res.id })}
                                 onClose={() => dispatch({ type: 'CLEAR_WATERBODY' })}
                             /> ):
                         (res.type === 'GEOPLACE' && ['PRK', 'RES'].includes(res.fcode)) ? 
-                            <AutocompletePark  key={res._id} data={res}
+                            <AutocompletePark  key={res.id} data={res}
                                 onSelect={() => dispatch({ type: 'SELECT_LOCATION', geoplace: res})}
                                 onClose={() => dispatch({ type: 'CLEAR_LOCATION'})}
                             /> : 
                         (res.type === 'GEOPLACE' &&
-                            <AutocompleteGeoplace  key={res._id} data={res}
+                            <AutocompleteGeoplace  key={res.id} data={res}
                                 onSelect={() => dispatch({ type: 'SELECT_LOCATION', geoplace: res})}
                                 onClose={() => dispatch({ type: 'CLEAR_LOCATION'})}
                             />
@@ -201,9 +201,9 @@ const TestPage = (): JSX.Element => {
                 { state.shouldQueryLocation && 
                     waterbodyResults?.pages.map(page => 
                         page.data.map(wb => (
-                            <AutocompleteWaterbody key={wb._id} data={wb} 
-                                isSelected={state.waterbody_id === wb._id}
-                                onSelect={() => dispatch({ type: 'SELECT_WATERBODY', _id: wb._id })}
+                            <AutocompleteWaterbody key={wb.id} data={wb} 
+                                isSelected={state.waterbody_id === wb.id}
+                                onSelect={() => dispatch({ type: 'SELECT_WATERBODY', id: wb.id })}
                                 onClose={() => dispatch({ type: 'CLEAR_WATERBODY' })}
                             />
                         ))

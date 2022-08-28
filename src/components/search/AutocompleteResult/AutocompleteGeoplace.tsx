@@ -23,8 +23,8 @@ const AutocompleteGeoplace = ({ data, onSelect, onClose }: Props): JSX.Element =
                     { 
                         data.fcode === 'ADM1' ?
                             <Text>{data.country}</Text> :
-                        data.county ?
-                            <Text>{data.county}, {data.admin_one}</Text> :
+                        data.admin_two ?
+                            <Text>{data.admin_two}, {data.admin_one}</Text> :
                         data.admin_one ? 
                             <Text>{data.admin_one}, {data.country}</Text> :
                             <Text>{data.country}</Text>

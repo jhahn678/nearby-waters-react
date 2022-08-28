@@ -13,7 +13,7 @@ type State = {
     locationError: boolean,
     fieldsTouched: boolean,
     showMap: boolean,
-    waterbody_id: string | null,
+    waterbody_id: number | null,
     selectedGeoplace: Geoplace | null
     queryingNearMe: boolean
     shouldQueryLocation: boolean
@@ -30,7 +30,7 @@ export type Action =
 | { type: 'SELECT_QUERYTYPE', value: 'ALL' | 'GEOPLACES' | 'WATERBODIES' }
 | { type: 'SET_CURRENT_LOCATION', value: latlng }
 | { type: 'LOCATION_ERROR' }
-| { type: 'SELECT_WATERBODY', _id: string }
+| { type: 'SELECT_WATERBODY',id: number }
 | { type: 'CLEAR_WATERBODY' }
 | { type: 'SELECT_LOCATION', geoplace: Geoplace }
 | { type: 'CLEAR_LOCATION' }
@@ -141,7 +141,7 @@ export const reducer = (state: State, action: Action): State => {
         return {
             ...state,
             showMap: true,
-            waterbody_id: action._id
+            waterbody_id: action.id
         }
     }
     else if(action.type === 'CLEAR_WATERBODY'){
@@ -152,7 +152,7 @@ export const reducer = (state: State, action: Action): State => {
         }
     }
     else if(action.type === 'SELECT_LOCATION'){
-        const { coordinates } = action.geoplace.geometry;
+        const { coordinates } = action.geoplace.geom;
         return {
             ...state,
             coordsAreNull: false,

@@ -1,4 +1,4 @@
-import Geometry from "./Geometry"
+import { GeometryCollection, MultiLineString, MultiPolygon } from "geojson"
 import { StateAbbreviation } from "./States"
 
 export type WaterbodyClassifications = 
@@ -9,27 +9,27 @@ export type WaterbodyClassifications =
 
 
 export interface IWaterbody {
-    _id: string,
+    id: number,
     name: string,
     classification: WaterbodyClassifications,
-    geometries: string[] | Geometry[]
     weight: number
     country: string
     ccode: string
     subregion: string
     admin_one: StateAbbreviation[]
     admin_two: string[]
-    type?: 'WATERBODY' 
 }
 
 export interface Waterbody extends IWaterbody {
     rank: number
-    distanceFrom?: number
+    distance?: number
+    type: 'WATERBODY'
 }
 
 
 export interface PopulatedWaterbody extends Waterbody {
-    geometries: Geometry[]
+    geometries: GeometryCollection | MultiLineString | MultiPolygon,
+    total_geometries: number
 }
 
 

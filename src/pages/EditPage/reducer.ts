@@ -8,9 +8,9 @@ interface State {
     adminOne: string | null
     selectedName: string | null
     shouldAutocomplete: boolean
-    selectedWaterbody: string | null
-    parentWaterbody: string | null
-    childrenWaterbodies: string[]
+    selectedWaterbody: number | null
+    parentWaterbody: number | null
+    childrenWaterbodies: number[]
     bounds: LngLatBoundsLike | null
     resultsIndex: number | null
     resultsTotal: number | null,
@@ -27,10 +27,10 @@ export type Action =
 | { type: 'CLEAR_STATE' }
 | { type: 'SELECT_WATERBODY', value: PopulatedWaterbody, index?: number }
 | { type: 'CLEAR_WATERBODY' }
-| { type: 'SELECT_PARENT', value: string }
+| { type: 'SELECT_PARENT', value: number }
 | { type: 'REMOVE_PARENT' }
-| { type: 'SELECT_CHILD', value: string }
-| { type: 'REMOVE_CHILD', value: string }
+| { type: 'SELECT_CHILD', value: number }
+| { type: 'REMOVE_CHILD', value: number }
 | { type: 'SET_BOUNDS', value: LngLatBoundsLike }
 | { type: 'MERGE_SUCCESS'}
 | { type: 'NEXT_RESULT' }
@@ -109,11 +109,12 @@ export const reducer = (state: State, action: Action): State => {
         }
     }
     else if(action.type === 'SELECT_WATERBODY'){
-        const bounds =  waterbodyToBBox(action.value)
         const obj =  {
             ...state,
-            selectedWaterbody: action.value._id,
-            bounds
+            selectedWaterbody: action.value.id,
+        }
+        if(action.value.total_geometries > 0){
+            obj.bounds = waterbodyToBBox(action.value)
         }
         if(action.index) obj.resultsIndex = action.index;
         return obj;

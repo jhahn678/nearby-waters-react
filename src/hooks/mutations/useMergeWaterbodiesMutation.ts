@@ -3,10 +3,10 @@ import axios from '../../utils/axios'
 
 
 interface MergeWaterbodyArgs {
-    /** Parent waterbody object id */
-    parentWaterbody: string,
+    /** Parent waterbody id */
+    parentWaterbody: number,
     /** Array of children waterbody ids */
-    childrenWaterbodies: string[]
+    childrenWaterbodies: number[]
 }
 
 const mergeWaterbodies = (args: MergeWaterbodyArgs) => {

@@ -7,14 +7,14 @@ export type ModalState = {
     showConfirmModal: boolean,
     confirmModalTitle: string,
     confirmModalBody: string,
-    selectedWaterbody: string | null,
+    selectedWaterbody: number | null,
     confirmType: 'DELETE' | 'EDIT' | null
 }
 
 export type ModalAction = 
 |   { type: 'SHOW_ERROR_MODAL', title?: string, body: string }
 |   { type: 'HIDE_ERROR_MODAL' }
-|   { type: 'SHOW_CONFIRM_DELETE', selectedWaterbody: string }
+|   { type: 'SHOW_CONFIRM_DELETE', selectedWaterbody: number }
 |   { type: 'SUBMIT_CONFIRM' }
 |   { type: 'CANCEL_CONFIRM' }
 
@@ -26,7 +26,7 @@ export const initialState: ModalState = {
     showConfirmModal: false,
     confirmModalTitle: 'Confirm this action',
     confirmModalBody: '',
-    selectedWaterbody: '',
+    selectedWaterbody: null,
     confirmType: null
 }
 

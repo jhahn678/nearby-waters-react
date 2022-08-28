@@ -86,7 +86,13 @@ const SearchNearLocationCard = ({
                         <Title order={4} style={{ fontWeight: '500' }}>
                             {selectedGeoplace.name}
                         </Title>
-                        <Text>{selectedGeoplace.county}, {selectedGeoplace.admin_one}</Text>
+                        { 
+                            selectedGeoplace.admin_two ?
+                                <Text>{selectedGeoplace.admin_two}, {selectedGeoplace.admin_one}</Text> :
+                            selectedGeoplace.admin_one ? 
+                                <Text>{selectedGeoplace.admin_one}, {selectedGeoplace.country}</Text> :
+                                <Text>{selectedGeoplace.country}</Text>
+                        }
                     </div>
                     <BsX size={32} className={classes.view} onClick={onClose}/> 
                 </div>
@@ -100,9 +106,9 @@ const SearchNearLocationCard = ({
                         </motion.div> 
                         <div className={classes.grid}> 
                             <Text size='md'>Latitude: </Text>
-                            <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geometry.coordinates[1]}</Text>
+                            <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geom.coordinates[1]}</Text>
                             <Text size='md'>Longitude: </Text>
-                            <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geometry.coordinates[0]}</Text>
+                            <Text style={{ justifySelf: 'flex-end'}}>{selectedGeoplace.geom.coordinates[0]}</Text>
                             <Text size='md'>Radius: </Text>
                             <Select
                                 data={radiusValues} size='xs'

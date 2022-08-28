@@ -1,4 +1,4 @@
-import { BBox, FeatureCollection } from 'geojson'
+import { FeatureCollection } from 'geojson'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@mantine/core'
 import { BsArrowLeft } from 'react-icons/bs'
@@ -6,7 +6,7 @@ import MapGL, { Source, Layer, MapRef } from 'react-map-gl'
 import bbox from '@turf/bbox'
 import { PopulatedWaterbody } from '../../types/Waterbody'
 import { waterbodiesToBBox, waterbodyToFeatureCollection } from '../../utils/geojsonConversions'
-import { colors, genColor } from './colors'
+import { genColor } from './colors'
 import { LngLatBoundsLike } from 'react-map-gl'
 
 
@@ -72,12 +72,12 @@ const Map = ({ mapId, data, waterbodies, showDismiss=false, dismissMap, bounds }
                 </Button>
             }
             { waterbodies && waterbodies.map((x, index) => (
-                <Source key={x._id} id={x._id} type="geojson" data={waterbodyToFeatureCollection(x)}>
-                    <Layer type='fill' id={`${x._id}-polygon`} 
+                <Source key={x.id} id={x.id.toString()} type="geojson" data={waterbodyToFeatureCollection(x)}>
+                    <Layer type='fill' id={`${x.id}-polygon`} 
                         paint={{ "fill-color": genColor(index) }} 
                         filter={['==', '$type', 'Polygon']}
                     />
-                    <Layer type='line' id={`${x._id}-line`} 
+                    <Layer type='line' id={`${x.id}-line`} 
                         paint={{ 'line-color': genColor(index), "line-width": 3 }}
                     />
                 </Source>

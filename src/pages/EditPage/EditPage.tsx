@@ -166,13 +166,13 @@ const EditPage = (): JSX.Element => {
             <Title order={3} style={{ color: 'whitesmoke', marginTop: '.5em'}}>No Results Found</Title>
           }
           { !waterbodiesLoading && waterbodyResults && waterbodyResults.map((wb, index) => (
-            <EditSearchResult key={wb._id} onMerge={handleMerge} index={index}
+            <EditSearchResult key={wb.id} onMerge={handleMerge} index={index}
               data={wb} color={genColor(index)} dispatch={dispatch}
-              isSelectedWaterbody={wb._id === state.selectedWaterbody}
-              isSelectedParent={wb._id === state.parentWaterbody} 
+              isSelectedWaterbody={wb.id === state.selectedWaterbody}
+              isSelectedParent={wb.id === state.parentWaterbody} 
               parentSelected={Boolean(state.parentWaterbody)}
               childrenSelected={state.childrenWaterbodies.length > 0}
-              isSelectedChild={state.childrenWaterbodies.includes(wb._id)}
+              isSelectedChild={state.childrenWaterbodies.includes(wb.id)}
             />
           ))}
           { !hasFetched &&  

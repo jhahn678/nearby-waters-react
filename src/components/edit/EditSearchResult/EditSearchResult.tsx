@@ -32,7 +32,7 @@ const EditSearchResult = ({
 
     const handleDelete: MouseEventHandler = e => {
         e.stopPropagation()
-        modalDispatch({ type: 'SHOW_CONFIRM_DELETE', selectedWaterbody: data._id })
+        modalDispatch({ type: 'SHOW_CONFIRM_DELETE', selectedWaterbody: data.id })
     }
 
     const handleClick = () => {
@@ -48,16 +48,17 @@ const EditSearchResult = ({
         e.stopPropagation()
         isSelectedParent ? 
         dispatch({ type: 'REMOVE_PARENT' }) :
-        dispatch({ type: 'SELECT_PARENT', value: data._id})
+        dispatch({ type: 'SELECT_PARENT', value: data.id})
     }
 
     const handleSelectChild: ChangeEventHandler<HTMLInputElement> = e => {
         e.stopPropagation()
         isSelectedChild ? 
-        dispatch({ type: 'REMOVE_CHILD', value: data._id }) :
-        dispatch({ type: 'SELECT_CHILD', value: data._id })
+        dispatch({ type: 'REMOVE_CHILD', value: data.id }) :
+        dispatch({ type: 'SELECT_CHILD', value: data.id })
     }
 
+    console.log(data)
     return (
         <motion.li 
             className={classes.container} 
@@ -66,11 +67,19 @@ const EditSearchResult = ({
         >
             <div className={classes.color} style={{ backgroundColor: color }}/>
             <div className={classes.details}>
-                <Text>{data.name} &bull; {data.geometries.length === 1 ? '1 geometry' : `${data.geometries.length} geometries`}</Text>
+                <Text>{data.name} &bull; {
+                    data.total_geometries === 1 ? 
+                    '1 geometry' : 
+                    `${data.total_geometries} geometries`
+                }</Text>
                 <Text>
                     { data.admin_one.length === 1 ? 
                         `${data.admin_one}` : 
-                        ( data.ccode === 'CA' ? `${data.admin_one.length} provinces` : `${data.admin_one.length} states` )
+                        ( 
+                            data.ccode === 'CA' ? 
+                            `${data.admin_one.length} provinces` : 
+                            `${data.admin_one.length} states` 
+                        )
                     } &bull; {data.country}
                 </Text>
             </div>

@@ -21,8 +21,8 @@ const AutocompletePark = ({ data, onSelect, onClose }: Props): JSX.Element => {
                 <div>
                     <Title order={3} style={{ fontWeight: '500' }} className={classes.title}>{data.name}</Title>
                     { 
-                        data.county ?
-                            <Text>{data.county}, {data.admin_one}</Text> :
+                        data.admin_two ?
+                            <Text>{data.admin_two}, {data.admin_one}</Text> :
                         data.admin_one ? 
                             <Text>{data.admin_one}, {data.country}</Text> :
                             <Text>{data.country}</Text>

@@ -2,12 +2,12 @@ import { useMutation } from 'react-query'
 import axios from '../../utils/axios'
 
 interface Args {
-    _id: string
+    id: number
 }
 
-const deleteWaterbody = ({ _id }: Args) => {
+const deleteWaterbody = ({ id }: Args) => {
     return axios.delete('/waterbody', {
-        data: { _id }
+        data: { id }
     })
 }
 

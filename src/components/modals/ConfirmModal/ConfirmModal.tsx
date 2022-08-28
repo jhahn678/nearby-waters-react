@@ -17,7 +17,7 @@ const ConfirmModal = ({
 
     const handleConfirm = () => {
         if(state.selectedWaterbody && state.confirmType === 'DELETE'){
-            deleteWaterbody({ _id: state.selectedWaterbody }, { onSuccess })
+            deleteWaterbody({ id: state.selectedWaterbody }, { onSuccess })
         }
         dispatch({ type: 'SUBMIT_CONFIRM' })
     }
