@@ -2,7 +2,7 @@ import React, { ChangeEventHandler, Dispatch, MouseEventHandler } from 'react'
 import { Action } from '../../../pages/EditPage/reducer'
 import classes from './EditSearchResult.module.css'
 import { PopulatedWaterbody } from '../../../types/Waterbody'
-import { Text, Checkbox, Button } from '@mantine/core'
+import { Text, Checkbox, Button, Tooltip } from '@mantine/core'
 import { motion } from 'framer-motion'
 import { BsTrash } from 'react-icons/bs'
 import useModalContext from '../../../hooks/contexts/modal/useModalContext'
@@ -28,7 +28,7 @@ const EditSearchResult = ({
 }: Props): JSX.Element => {
 
     const { dispatch: modalDispatch } = useModalContext()
-    const {isAuthenticated } = useAuth()
+    const isAuthenticated = useAuth(store => store.isAuthenticated)
 
     const handleDelete: MouseEventHandler = e => {
         e.stopPropagation()
@@ -58,7 +58,6 @@ const EditSearchResult = ({
         dispatch({ type: 'SELECT_CHILD', value: data.id })
     }
 
-    console.log(data)
     return (
         <motion.li 
             className={classes.container} 
@@ -83,36 +82,36 @@ const EditSearchResult = ({
                     } &bull; {data.country}
                 </Text>
             </div>
-            { isAuthenticated &&
-                <div className={classes.actions}>
-                    { isSelectedWaterbody && !parentSelected &&
-                        <BsTrash size={24} onClick={handleDelete}
-                            style={{ marginRight: 16, cursor: 'pointer' }} 
-                        /> 
-                    }
-                    { 
-                        (isSelectedParent && childrenSelected) ? 
-                            <Button size='sm' 
+            <div className={classes.actions}>
+                { isSelectedWaterbody && !parentSelected &&
+                    <BsTrash size={24} onClick={handleDelete}
+                        style={{ marginRight: 16, cursor: 'pointer' }} 
+                    /> 
+                }
+                { 
+                    (isSelectedParent && childrenSelected) ? 
+                        <Tooltip label='This action is currently disabled'>
+                            <Button 
+                                size='sm' 
                                 style={{ backgroundColor: color }}
                                 onClick={onMerge}
-                            >
-                                Merge Waterbodies
-                            </Button> :
-                        (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
-                            <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
-                                styles={{ input: { '&:checked': { backgroundColor: color }} }}
-                                checked={isSelectedParent} 
-                                onChange={handleSelectParent} 
-                            /> :
-                        (parentSelected && !isSelectedParent) &&
-                            <Checkbox 
-                                checked={isSelectedChild} 
-                                onChange={handleSelectChild} 
-                                label={isSelectedChild ? 'Selected as child' : 'Select as child'}
-                            />
-                    }
-                </div>
-            }
+                            >Merge Waterbodies
+                            </Button>
+                        </Tooltip> :
+                    (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
+                        <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
+                            styles={{ input: { '&:checked': { backgroundColor: color }} }}
+                            checked={isSelectedParent} 
+                            onChange={handleSelectParent} 
+                        /> :
+                    (parentSelected && !isSelectedParent) &&
+                        <Checkbox 
+                            checked={isSelectedChild} 
+                            onChange={handleSelectChild} 
+                            label={isSelectedChild ? 'Selected as child' : 'Select as child'}
+                        />
+                }
+            </div>
         </motion.li>
     )
 }

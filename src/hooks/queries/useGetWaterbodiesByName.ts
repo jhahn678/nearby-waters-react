@@ -2,7 +2,6 @@ import { useQuery } from 'react-query'
 import axios from '../../utils/axios'
 import { PopulatedWaterbody } from '../../types/Waterbody'
 
-
 interface GetWaterbodiesQuery {
     name: string | null,
     adminOne: string | null,
@@ -10,7 +9,6 @@ interface GetWaterbodiesQuery {
     shouldQuery: boolean,
     onSuccess: (data: PopulatedWaterbody[]) => void
 }
-
 
 const getWaterbodiesByName = async ({
     name, classifications, adminOne
@@ -22,9 +20,7 @@ const getWaterbodiesByName = async ({
     return res.data;
 }
 
-
 export const useGetWaterbodiesByName = (args: GetWaterbodiesQuery) => {
-
     const result = useQuery({
         queryKey: `${args.name}-waterbodies`,
         queryFn: () => getWaterbodiesByName(args),

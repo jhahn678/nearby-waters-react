@@ -1,7 +1,8 @@
 import React from 'react';
-import { Modal, Text, Title, Button } from '@mantine/core'
+import { Modal, Text, Title, Button, Tooltip } from '@mantine/core'
 import useModalContext from '../../../hooks/contexts/modal/useModalContext';
 import { useDeleteWaterbody } from '../../../hooks/mutations/useDeleteWaterbody'
+import { useAuth } from '../../../hooks/zustand/useAuth';
 
 interface Props {
     onSuccess: () => void
@@ -12,10 +13,11 @@ const ConfirmModal = ({
 }: Props): JSX.Element => {
 
     const { state, dispatch } = useModalContext()
-
+    const isAuthenticated = useAuth(state=> state.isAuthenticated)
     const { mutate: deleteWaterbody } = useDeleteWaterbody()
 
     const handleConfirm = () => {
+        if(!isAuthenticated) return;
         if(state.selectedWaterbody && state.confirmType === 'DELETE'){
             deleteWaterbody({ id: state.selectedWaterbody }, { onSuccess })
         }
@@ -35,7 +37,12 @@ const ConfirmModal = ({
                 <Button color='gray' style={{ marginRight: 8 }}
                     onClick={() => dispatch({ type: 'CANCEL_CONFIRM'})}
                 >Cancel</Button>
-                <Button onClick={handleConfirm} color='red'>Confirm</Button>
+                <Tooltip label='This action is currently disabled'>
+                    <Button 
+                        onClick={handleConfirm} 
+                        color='red'
+                    >Confirm</Button>    
+                </Tooltip>
             </div>
         </Modal>
     )

@@ -15,6 +15,8 @@ import { v4 as uuid} from 'uuid'
 import EditSearchResult from '../../components/edit/EditSearchResult/EditSearchResult'
 import ConfirmModal from '../../components/modals/ConfirmModal/ConfirmModal'
 import WaterbodyClassificationSelect from '../../components/search/WaterbodyClassificationSelect/WaterbodyClassificationSelect'
+import { useAuth } from '../../hooks/zustand/useAuth'
+import useModalContext from '../../hooks/contexts/modal/useModalContext'
 
 
 const EditPage = (): JSX.Element => {
@@ -50,9 +52,8 @@ const EditPage = (): JSX.Element => {
     }
   })
 
-  
-
-
+  const isAuthenticated = useAuth(store => store.isAuthenticated)
+  const { dispatch: modalDispatch } = useModalContext()
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'INPUT_NAME', value: e.target.value })
@@ -73,6 +74,10 @@ const EditPage = (): JSX.Element => {
   }
 
   const handleMerge = () => {
+    if(!isAuthenticated) return modalDispatch({ 
+      type: 'SHOW_ERROR_MODAL', 
+      body: 'You must be signed in as an Admin to perform this action'
+    })
     const { parentWaterbody, childrenWaterbodies } = state;
     if(parentWaterbody && childrenWaterbodies.length > 0){
       mergeWaterbody({ parentWaterbody, childrenWaterbodies }, {
