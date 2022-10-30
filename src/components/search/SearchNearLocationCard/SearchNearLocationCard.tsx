@@ -102,7 +102,7 @@ const SearchNearLocationCard = ({
                             className={classes.details} 
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1, transition: { duration: .1 }}}>
-                            <Title order={5}>Showing {numberOfResults} results</Title>
+                            {numberOfResults ? <Title order={5}>Showing {numberOfResults} results</Title> : undefined}
                         </motion.div> 
                         <div className={classes.grid}> 
                             <Text size='md'>Latitude: </Text>

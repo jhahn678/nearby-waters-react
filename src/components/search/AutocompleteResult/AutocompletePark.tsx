@@ -11,7 +11,7 @@ type Props = {
     onClose: () => void
 }
 
-const AutocompletePark = ({ data, onSelect, onClose }: Props): JSX.Element => {
+const AutocompletePark = ({ data, onSelect }: Props): JSX.Element => {
 
 
     return (
