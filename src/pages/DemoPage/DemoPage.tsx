@@ -44,7 +44,6 @@ const TestPage = (): JSX.Element => {
 
     const { 
         results, 
-        isError, 
         isLoading,
     } = useAutoComplete({ 
         input: state.input, 
@@ -164,8 +163,6 @@ const TestPage = (): JSX.Element => {
                 />
 
             </motion.div>
-
-
 
             <motion.div 
                 className={classes.resultsContainer} 

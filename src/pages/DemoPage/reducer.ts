@@ -63,10 +63,8 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
     if(action.type === 'INPUT_VALUE'){
-        const { coordsAreNull, coordsAreValid, shouldQueryLocation } = state;
-        const shouldQueryAutocomplete = !shouldQueryLocation && (
-            coordsAreValid || (coordsAreNull && action.value.length > 0)
-        )
+        const { shouldQueryLocation } = state;
+        const shouldQueryAutocomplete = !shouldQueryLocation && action.value.length > 0
         return { 
             ...state, 
             fieldsTouched: true,
