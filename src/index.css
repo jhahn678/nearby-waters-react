@@ -49,3 +49,9 @@ code {
   align-items: center;
   justify-content: space-between;
 }
+
+@media screen and (max-width: 600px) {
+  .nav-link{
+    font-size: 1.3em;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, ChangeEvent, MouseEventHandler, KeyboardEventHandler} from 'react'
+import React, { useReducer, useEffect, ChangeEvent, MouseEventHandler, KeyboardEventHandler } from 'react'
 import classes from './EditPage.module.css'
 import Page from '../../components/shared/Page'
 import Map from '../../components/map/Map'
@@ -121,7 +121,6 @@ const EditPage = (): JSX.Element => {
     return () => window.removeEventListener('keydown', handleKey)
 
   }, [])
-  
 
 
   return (
@@ -185,7 +184,7 @@ const EditPage = (): JSX.Element => {
             </Text>
           }
         </ul>
-      </div >
+      </div>
       <div className={classes.mapSection}>
         <Map mapId='edit-map' waterbodies={waterbodyResults} bounds={state.bounds} />
       </div>

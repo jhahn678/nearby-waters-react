@@ -1,21 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import classes from './Header.module.css'
 import { NavLink } from 'react-router-dom'
-import { Title } from '@mantine/core'
+import { Burger, Drawer, Title } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 
 const Header = (): JSX.Element => {
 
+  const [open, setOpen] = useState(false)
+  const maxWidth700 = useMediaQuery('(max-width: 700px)')
+
   return (
     <div className={classes.container}>
+      {maxWidth700 && <Burger color={'white'} opened={open} onClick={() => setOpen(true)}/>}
         <Title className={classes.header} order={1}>Heron Waterbodies API</Title>
-        <div className={classes.links}>
-          <NavLink to='/' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}>
-            <Title order={3}>Demo</Title>
-          </NavLink>
-          <NavLink to='/explore' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}>
-            <Title order={3}>Explore</Title>
-          </NavLink>
-        </div>
+        {maxWidth700 ?
+          <Drawer opened={open} onClose={() => setOpen(false)}>
+            
+          </Drawer> :
+          <div className={classes.links}>
+            <NavLink to='/' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}>
+              <Title order={3}>Demo</Title>
+            </NavLink>
+            <NavLink to='/explore' className={({ isActive }) => isActive ? 'nav-link-active' : 'nav-link'}>
+              <Title order={3}>Explore</Title>
+            </NavLink>
+          </div>
+        }
     </div>
   )
 }

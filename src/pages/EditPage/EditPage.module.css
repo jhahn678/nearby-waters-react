@@ -1,5 +1,4 @@
 .container{
-    display: flex;
     width: 100vw;
     overflow: hidden;
     display: grid;
@@ -8,8 +7,9 @@
 
 .controlSection{
     max-height: 90vh;
+    min-width: 600px;
     background-color: rgba(255,255,255,.05);
-    padding: 3vh 4vw;
+    padding: 32px;
     position: relative;
     overflow-y: scroll;
 }
@@ -54,4 +54,48 @@
     display: grid;
     grid-template-rows: 1fr;
     margin-top: 2em;
+}
+
+@media screen and (max-width: 1200px) {
+    .container{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .mapSection{
+        padding: 48px;
+        width: 100%;
+        height: 100vh;
+    }
+    .controlSection{
+        max-height: unset;
+        min-height: 50vh;
+        padding: 48px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .mapSection {
+        padding: 24px;
+    }
+    .controlSection {
+        padding: 24px;
+        min-width: 0px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .mapSection {
+        padding: 24px;
+    }
+
+    .controlSection {
+        padding: 24px;
+        min-width: 0px;
+    }
+}
+@media screen and (max-width: 600px) {
+    .mapSection {
+        padding: 0;
+        height: 70vh;
+    }
 }

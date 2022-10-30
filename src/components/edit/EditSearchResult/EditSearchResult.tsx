@@ -6,7 +6,7 @@ import { Text, Checkbox, Button, Tooltip } from '@mantine/core'
 import { motion } from 'framer-motion'
 import { BsTrash } from 'react-icons/bs'
 import useModalContext from '../../../hooks/contexts/modal/useModalContext'
-import { useAuth } from '../../../hooks/zustand/useAuth'
+import { useMediaQuery } from '@mantine/hooks'
 
 interface Props {
     data: PopulatedWaterbody
@@ -28,7 +28,6 @@ const EditSearchResult = ({
 }: Props): JSX.Element => {
 
     const { dispatch: modalDispatch } = useModalContext()
-    const isAuthenticated = useAuth(store => store.isAuthenticated)
 
     const handleDelete: MouseEventHandler = e => {
         e.stopPropagation()
@@ -58,6 +57,8 @@ const EditSearchResult = ({
         dispatch({ type: 'SELECT_CHILD', value: data.id })
     }
 
+    const maxWidth600 = useMediaQuery('(min-width: 600px)')
+
     return (
         <motion.li 
             className={classes.container} 
@@ -66,11 +67,12 @@ const EditSearchResult = ({
         >
             <div className={classes.color} style={{ backgroundColor: color }}/>
             <div className={classes.details}>
-                <Text>{data.name} &bull; {
+                <Text>{data.name}</Text>
+                {/* <Text>{data.name} &bull; {
                     data.total_geometries === 1 ? 
                     '1 geometry' : 
                     `${data.total_geometries} geometries`
-                }</Text>
+                }</Text> */}
                 <Text>
                     { data.admin_one.length === 1 ? 
                         `${data.admin_one}` : 
@@ -82,36 +84,38 @@ const EditSearchResult = ({
                     } &bull; {data.country}
                 </Text>
             </div>
-            <div className={classes.actions}>
-                { isSelectedWaterbody && !parentSelected &&
-                    <BsTrash size={24} onClick={handleDelete}
-                        style={{ marginRight: 16, cursor: 'pointer' }} 
-                    /> 
-                }
-                { 
-                    (isSelectedParent && childrenSelected) ? 
-                        <Tooltip label='This action is currently disabled'>
-                            <Button 
-                                size='sm' 
-                                style={{ backgroundColor: color }}
-                                onClick={onMerge}
-                            >Merge Waterbodies
-                            </Button>
-                        </Tooltip> :
-                    (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
-                        <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
-                            styles={{ input: { '&:checked': { backgroundColor: color }} }}
-                            checked={isSelectedParent} 
-                            onChange={handleSelectParent} 
-                        /> :
-                    (parentSelected && !isSelectedParent) &&
-                        <Checkbox 
-                            checked={isSelectedChild} 
-                            onChange={handleSelectChild} 
-                            label={isSelectedChild ? 'Selected as child' : 'Select as child'}
-                        />
-                }
-            </div>
+            { maxWidth600 && (
+                <div className={classes.actions}>
+                    { isSelectedWaterbody && !parentSelected &&
+                        <BsTrash size={24} onClick={handleDelete}
+                            style={{ marginRight: 16, cursor: 'pointer' }} 
+                        /> 
+                    }
+                    {
+                        (isSelectedParent && childrenSelected) ? 
+                            <Tooltip label='This action is currently disabled'>
+                                <Button 
+                                    size='sm' 
+                                    style={{ backgroundColor: color }}
+                                    onClick={onMerge}
+                                >Merge Waterbodies
+                                </Button>
+                            </Tooltip> :
+                        (isSelectedParent || (isSelectedWaterbody && !parentSelected)) ?
+                            <Checkbox label={isSelectedParent ? 'Selected as parent' : 'Select as parent'}
+                                styles={{ input: { '&:checked': { backgroundColor: color }} }}
+                                checked={isSelectedParent} 
+                                onChange={handleSelectParent} 
+                            /> :
+                        (parentSelected && !isSelectedParent) &&
+                            <Checkbox 
+                                checked={isSelectedChild} 
+                                onChange={handleSelectChild} 
+                                label={isSelectedChild ? 'Selected as child' : 'Select as child'}
+                            />
+                    }
+                </div>
+            )}
         </motion.li>
     )
 }
