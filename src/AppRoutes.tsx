@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DemoPage from './pages/DemoPage/DemoPage'
 import AuthPage from './pages/AuthPage/AuthPage'
 import EditPage from "./pages/EditPage/EditPage";
-import AboutPage from "./pages/AboutPage/AboutPage";
 
 const AppRoutes = (): JSX.Element => {
   return (

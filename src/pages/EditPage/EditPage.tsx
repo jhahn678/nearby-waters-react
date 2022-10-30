@@ -39,7 +39,6 @@ const EditPage = (): JSX.Element => {
   const { 
     data: waterbodyResults,
     isLoading: waterbodiesLoading,
-    isError: waterbodiesError,
     refetch: waterbodiesRefetch,
     isFetched: hasFetched
   } = useGetWaterbodiesByName({ 
