@@ -46,3 +46,13 @@
     width: 100%;
     row-gap: 4px;
 }
+
+
+@media screen and (max-width: 400px) {
+    .container{
+        padding: 1em;
+    }
+    .icon{
+        margin-right: .7em;
+    }
+}

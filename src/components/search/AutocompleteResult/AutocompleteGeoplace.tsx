@@ -3,6 +3,7 @@ import Geoplace from '../../../types/Geoplace'
 import classes from './AutocompleteResult.module.css'
 import { BsFlag, BsSearch } from 'react-icons/bs'
 import { Title, Text } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 
 type Props = {
     data: Geoplace,
@@ -10,16 +11,16 @@ type Props = {
     onClose: () => void
 }
 
-const AutocompleteGeoplace = ({ data, onSelect, onClose }: Props): JSX.Element => {
+const AutocompleteGeoplace = ({ data, onSelect }: Props): JSX.Element => {
 
-
+    const maxWidth600 = useMediaQuery('(max-width: 600px)')
 
     return (
         <div className={`${classes.geoplace} ${classes.container}`} onClick={onSelect}>
             <div className={classes.headingContainer}>
-                <div className={classes.icon}><BsFlag size={32}/></div>
+                <div className={classes.icon}><BsFlag size={maxWidth600 ? 24 : 32}/></div>
                 <div>
-                    <Title order={3} style={{ fontWeight: '500' }}>{data.name}</Title>
+                    <Title order={maxWidth600 ? 4 : 3} style={{ fontWeight: '500' }}>{data.name}</Title>
                     { 
                         data.fcode === 'ADM1' ?
                             <Text>{data.country}</Text> :
@@ -30,7 +31,7 @@ const AutocompleteGeoplace = ({ data, onSelect, onClose }: Props): JSX.Element =
                             <Text>{data.country}</Text>
                     }
                 </div>
-                <BsSearch size={28} className={classes.view}/>
+                <BsSearch size={maxWidth600 ? 24 : 28} className={classes.view}/>
             </div>
         </div>
     )

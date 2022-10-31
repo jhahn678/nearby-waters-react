@@ -9,7 +9,7 @@
     flex-shrink: 0;
     height: 87vh;
     width: 40vw;
-    min-width: 400px;
+    min-width: 450px;
     background-color: rgba(169, 187, 203, 0.3);
     border-top-right-radius: 5px;
     display: flex;
@@ -120,9 +120,32 @@
 }
 
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 1050px) {
     .searchBox{
-        width: 100%;
-        min-width: 100%;
+        min-height: unset !important;
+        height: 700px;
+        width: 100vw;
+    }
+    .container{
+        flex-direction: column;
+    }
+    .resultsContainer{
+        width: 100vw !important;
+    }
+    .mapContainer{
+        display: none;
     }
 }
+
+@media screen and (max-width: 450px) {
+    .searchBox{
+        min-width: unset;
+    }
+}
+
+@media screen and (max-height: 1200px) {
+    .searchBox {
+        min-height: 700px;
+    }
+}
+

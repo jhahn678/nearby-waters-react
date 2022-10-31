@@ -1,10 +1,11 @@
 import React, { MouseEventHandler } from 'react'
 import classes from './AutocompleteResult.module.css'
-import { stateAbbrToName } from '../../../utils/stateAbbrToName'
 import { BsWater, BsArrowRight, BsX  } from 'react-icons/bs'
 import { capitalize } from '../../../utils/conversions'
 import { Title, Text } from '@mantine/core'
 import Waterbody from '../../../types/Waterbody'
+import { useMediaQuery } from '@mantine/hooks'
+import useModalContext from '../../../hooks/contexts/modal/useModalContext'
 
 const Label = ({ label }: { label: string}) => (
     <Text color='#607685' size='md' style={{ paddingRight: 32 }}>{label}:</Text>
@@ -19,20 +20,35 @@ type Props = {
 
 const AutocompleteWaterbody = ({ data, onSelect, onClose, isSelected }: Props): JSX.Element => {
 
+    const maxWidth600 = useMediaQuery('(max-width: 600px)')
+    const maxWidth1050 = useMediaQuery('(max-width: 1050px)')
+    const { dispatch } = useModalContext()
+
     const handleClose: MouseEventHandler<HTMLDivElement> = e => {
         e.stopPropagation()
         onClose()
     }
 
+    const handleClick = () => {
+        if(maxWidth1050){
+            dispatch({ 
+                type: 'SHOW_ERROR_MODAL', 
+                title: 'Viewable on desktop only',
+                body: 'This action can only be performed from a desktop browser.'
+            })
+        }else{
+            onSelect()
+        }
+    }
 
     return (
         <div className={`${classes.waterbody} ${classes.container}
-            ${isSelected && classes.containerSelected}`} onClick={onSelect}
+            ${isSelected && classes.containerSelected}`} onClick={handleClick}
         >
             <div className={classes.headingContainer}>
-                <div className={classes.icon}><BsWater size={32}/></div>
+                <div className={classes.icon}><BsWater size={maxWidth600 ? 24 : 32}/></div>
                 <div>
-                    <Title order={3} style={{ fontWeight: '500' }} className={classes.title}>{data.name}</Title>
+                    <Title order={maxWidth600 ? 4 : 3} style={{ fontWeight: '500' }} className={classes.title}>{data.name}</Title>
                     { 
                         data.admin_two && data.admin_two.length === 1 ?
                             <Text>{data.admin_two[0]}, {data.admin_one[0]}</Text> :
@@ -46,7 +62,7 @@ const AutocompleteWaterbody = ({ data, onSelect, onClose, isSelected }: Props): 
                     }
                 </div>
                 { !isSelected ? 
-                    <BsArrowRight size={32} className={classes.view}/> :
+                    <BsArrowRight size={maxWidth600 ? 24 : 32} className={classes.view}/> :
                     <div className={classes.close} onClick={handleClose}><BsX size={36}/></div>
                 }
             </div>

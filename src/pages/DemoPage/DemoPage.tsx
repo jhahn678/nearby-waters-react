@@ -19,6 +19,7 @@ import { useGetWaterbodies } from '../../hooks/queries/useGetWaterbodies'
 import SearchNearMeButton from '../../components/search/SearchNearMeButton/SearchNearMeButton'
 import { motion } from 'framer-motion'
 import SearchNearLocationCard from '../../components/search/SearchNearLocationCard/SearchNearLocationCard'
+import { useMediaQuery } from '@mantine/hooks'
 
 const TestPage = (): JSX.Element => {
 
@@ -60,6 +61,17 @@ const TestPage = (): JSX.Element => {
         ) fetchNextPage() 
     }
 
+    const minWidth = useMediaQuery('(max-width: 1050px)')
+
+    useEffect(() => {
+        if(window.innerWidth < 1050) modalDispatch({ 
+            type: 'SHOW_ERROR_MODAL', 
+            title: "Head's up",
+            body: 'This application is designed for desktop use only. '+ 
+            'Functionality on mobile, tablet or small browsing windows are limited.'
+        })
+    },[minWidth])
+
     const [inputBoxPosition, setInputBoxPosition] = useState<number | string>(0)
 
     useEffect(() => {
@@ -70,7 +82,6 @@ const TestPage = (): JSX.Element => {
             return () => clearTimeout(delay)
         }
     },[state.selectedGeoplace, state.queryingNearMe])
-
 
     useEffect(() => { if(state.waterbody_id) fetchWaterbody() }, [state.waterbody_id])
 
@@ -209,7 +220,7 @@ const TestPage = (): JSX.Element => {
                 {
                     !state.shouldQueryAutocomplete && !state.shouldQueryLocation && 
                     <div className={classes.instructions}>
-                        <Title order={2} style={{ color: 'whitesmoke' }}>To demo the in-app search:</Title>
+                        <Title order={2} style={{ color: 'whitesmoke'}}>To demo the in-app search:</Title>
                         <ul className={classes.instructionsList}>
                             <li>
                                 Click the <i>Use My Current Location</i> button or manually enter in a pair 

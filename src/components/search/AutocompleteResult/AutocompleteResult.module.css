@@ -1,7 +1,7 @@
 .container{
     flex-shrink: 0;
     height: 100px;
-    width: 43vw;
+    width: 80%;
     border-radius: 5px;
     margin-bottom: 1em;
     padding: 1.5em;
@@ -69,4 +69,18 @@
     background-color: #bccfdb;
 }
 
-
+@media screen and (max-width: 600px) {
+    .container{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 500px) {
+    .icon {
+        padding: .7em;
+        margin-right: .8em;
+    }
+    .container{
+        padding: 1em;
+        height: fit-content;
+    }
+}
