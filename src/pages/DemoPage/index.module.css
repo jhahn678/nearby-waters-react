@@ -145,7 +145,7 @@
 
 @media screen and (max-height: 1200px) {
     .searchBox {
-        min-height: 700px;
+        min-height: 100%;
     }
 }
 
